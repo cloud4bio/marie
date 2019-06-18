@@ -23,7 +23,7 @@ marie.ui=function(div){
         <Button id = "subtraction"> - </Button>
         <Button id = "multiplication"> * </Button>
         <Button id = "division"> / </Button>
-
+            
         <!-- <p id="addition"><input id="x">+<input id="y">=<span id="result"></span>
         </p>
         <p id="subtraction"><input id="a">-<input id="b">=<span id="subAnswer"></span>
@@ -36,21 +36,27 @@ marie.ui=function(div){
         document.getElementById("division").onclick = function(){divide()}
         document.getElementById("multiplication").onclick = function(){multiply()}*/
 
+        function listen(){
         document.getElementById("addition").onclick = function(){changeOp("addition")}
         document.getElementById("subtraction").onclick = function(){changeOp("subtraction")}
         document.getElementById("multiplication").onclick = function(){changeOp("multiplication")}
         document.getElementById("division").onclick = function(){changeOp("division")}
-
+        }
+        
+        listen()
       /* document.getElementById("addition").addEventListener("onclick", add())
         document.getElementById("subtraction").addEventListener("onclick", subtract())*/
         
         function changeOp(operation){
+            listen()
             switch(operation){
                 case "addition":
+                    console.log("adding")
                     clear()
                     add()
                     break
                 case "subtraction":
+                    console.log("subtracting")
                     clear()
                     subtract()
                     break
@@ -76,6 +82,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)+parseFloat(y.value)
             }
+            listen()
         }
 
         function subtract(){
@@ -85,6 +92,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)-parseFloat(y.value)
             }
+            listen()
         }
 
         function multiply(){
@@ -94,6 +102,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)*parseFloat(y.value)
             }
+            listen()
         }
 
         function divide(){
@@ -103,6 +112,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)/parseFloat(y.value)
             }
+            listen()
         }
 
         //Create buttons for user to pick operation
@@ -134,7 +144,7 @@ marie.ui=function(div){
 //On page startup
 window.onload=function(){
     if(document.getElementById('workSpace')){
-        marie.ui(document.getElementById('workSpace'))        
+        marie.ui(document.getElementById('workSpace'))    
     }
 
     
