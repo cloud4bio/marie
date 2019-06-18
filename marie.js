@@ -10,10 +10,12 @@ marie.ui=function(div){
         how are you doing?
         today is ${Date()}.
         </p>
-        <p id="some Math"><input id="x">+<input id="y">=<spanid="result"></span>
+        <p id="some Math"><input id="x">+<input id="y">=<span id="result"></span>
         </p>`
         marie.div.innerHTML=h
-        x.onkeyup=function(){console.log('stop pressing me at '+Date())}
+        x.onkeyup=y.onkeyup=function(){
+            result.innerText=parseFloat(x.value)+parseFloat(y.value)
+        }
 
     }
 }
