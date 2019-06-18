@@ -15,7 +15,10 @@ marie.ui=function(div){
         today is ${Date()}. 
         </p> -->
         <p> Welcome to the calculator! Choose an operation: </p>
-
+        <p><span><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Casio_calculator_JS-20WK_in_201901_002.jpg/255px-Casio_calculator_JS-20WK_in_201901_002.jpg" width = "10%" height = "20%">
+        <caption> Image from <a href = "https://en.wikipedia.org/wiki/Calculator" target="_blank"> Wikipedia </a></caption></span></p>
+        <br><br>
+           
         <Button id = "addition"> + </Button>
         <Button id = "subtraction"> - </Button>
         <Button id = "multiplication"> * </Button>
@@ -37,22 +40,36 @@ marie.ui=function(div){
         document.getElementById("subtraction").onclick = function(){changeOp("subtraction")}
         document.getElementById("multiplication").onclick = function(){changeOp("multiplication")}
         document.getElementById("division").onclick = function(){changeOp("division")}
+
+      /* document.getElementById("addition").addEventListener("onclick", add())
+        document.getElementById("subtraction").addEventListener("onclick", subtract())*/
         
         function changeOp(operation){
             switch(operation){
                 case "addition":
+                    clear()
                     add()
+                    break
                 case "subtraction":
+                    clear()
                     subtract()
+                    break
                 case "multiplication":
+                    clear()
                     multiply()
+                    break
                  case "division":
+                    clear()
                     divide()
+                    break
             }
         }
 
+        function clear(){
+            marie.div.innerHTML = h
+        }
+
         function add(){
-             marie.div.innerHTML = h
              let inputs = `<p id="addText"><input id="x"> + <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -62,7 +79,6 @@ marie.ui=function(div){
         }
 
         function subtract(){
-             marie.div.innerHTML = h
              let inputs = `<p id="subtractText"><input id="x"> - <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -72,7 +88,6 @@ marie.ui=function(div){
         }
 
         function multiply(){
-             marie.div.innerHTML = h
              let inputs = `<p id="multiplyText"><input id="x"> * <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -82,7 +97,6 @@ marie.ui=function(div){
         }
 
         function divide(){
-             marie.div.innerHTML = h
              let inputs = `<p id="divideText"><input id="x"> / <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
