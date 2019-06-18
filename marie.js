@@ -9,7 +9,7 @@ marie.ui=function(div){
 
         //Header and text 
         //Create buttons for user to pick operation
-        let h = `<h3>hello world</h3>   
+        let h = `<h3>Hello World :)</h3>   
        <!-- <p>
         how are you doing?
         today is ${Date()}. 
@@ -28,13 +28,31 @@ marie.ui=function(div){
         marie.div.innerHTML=h
         //marie.div.innerHTML += '<p>test</p>'
 
-        document.getElementById("addition").onclick = function(){add()}
+       /* document.getElementById("addition").onclick = function(){add()} 
         document.getElementById("subtraction").onclick = function(){subtract()}
         document.getElementById("division").onclick = function(){divide()}
-        document.getElementById("multiplication").onclick = function(){multiply()}
+        document.getElementById("multiplication").onclick = function(){multiply()}*/
+
+        document.getElementById("addition").onclick = function(){changeOp("addition")}
+        document.getElementById("subtraction").onclick = function(){changeOp("subtraction")}
+        document.getElementById("multiplication").onclick = function(){changeOp("multiplication")}
+        document.getElementById("division").onclick = function(){changeOp("division")}
         
-        
+        function changeOp(operation){
+            switch(operation){
+                case "addition":
+                    add()
+                case "subtraction":
+                    subtract()
+                case "multiplication":
+                    multiply()
+                 case "division":
+                    divide()
+            }
+        }
+
         function add(){
+             marie.div.innerHTML = h
              let inputs = `<p id="addText"><input id="x"> + <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -44,6 +62,7 @@ marie.ui=function(div){
         }
 
         function subtract(){
+             marie.div.innerHTML = h
              let inputs = `<p id="subtractText"><input id="x"> - <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -53,6 +72,7 @@ marie.ui=function(div){
         }
 
         function multiply(){
+             marie.div.innerHTML = h
              let inputs = `<p id="multiplyText"><input id="x"> * <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
@@ -62,6 +82,7 @@ marie.ui=function(div){
         }
 
         function divide(){
+             marie.div.innerHTML = h
              let inputs = `<p id="divideText"><input id="x"> / <input id="y"> = <span id="result"></span>
         </p>`
             marie.div.innerHTML += inputs
