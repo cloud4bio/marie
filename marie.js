@@ -19,11 +19,18 @@ marie.ui=function(div){
         <caption> Image from <a href = "https://en.wikipedia.org/wiki/Calculator" target="_blank"> Wikipedia </a></caption></span></p>
         <br><br>
            
+        <Button id = "addition" style = "background-color:LightBlue; font-weight:bold"> addition </Button>
+        <Button id = "subtraction" style = "background-color:LightGreen; font-weight:bold"> subtraction </Button>
+        <Button id = "multiplication" style = "background-color:LightPink; font-weight:bold"> multiplication </Button>
+        <Button id = "division" style = "background-color:Violet; font-weight:bold"> division </Button> 
+          
+        <!--  
         <Button id = "addition"> + </Button>
         <Button id = "subtraction"> - </Button>
         <Button id = "multiplication"> * </Button>
         <Button id = "division"> / </Button>
-            
+        -->
+
         <!-- <p id="addition"><input id="x">+<input id="y">=<span id="result"></span>
         </p>
         <p id="subtraction"><input id="a">-<input id="b">=<span id="subAnswer"></span>
