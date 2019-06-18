@@ -6,7 +6,7 @@ marie.ui=function(div){
     marie.div=div||document.getElementById('workSpace')
 
     if(marie.div){
-
+        var historyData = []
         //Header and text 
         //Create buttons for user to pick operation
         let h = `<h3>Hello World :)</h3>   
@@ -17,24 +17,19 @@ marie.ui=function(div){
         <p> Welcome to the calculator! Choose an operation: </p>
         <p><span><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Casio_calculator_JS-20WK_in_201901_002.jpg/255px-Casio_calculator_JS-20WK_in_201901_002.jpg" width = "10%" height = "20%">
         <caption> Image from <a href = "https://en.wikipedia.org/wiki/Calculator" target="_blank"> Wikipedia </a></caption></span></p>
-        <br><br>
-           
+
+
         <Button id = "addition" style = "background-color:LightBlue; font-weight:bold"> addition </Button>
         <Button id = "subtraction" style = "background-color:LightGreen; font-weight:bold"> subtraction </Button>
         <Button id = "multiplication" style = "background-color:LightPink; font-weight:bold"> multiplication </Button>
         <Button id = "division" style = "background-color:Violet; font-weight:bold"> division </Button> 
-          
-        <!--  
-        <Button id = "addition"> + </Button>
-        <Button id = "subtraction"> - </Button>
-        <Button id = "multiplication"> * </Button>
-        <Button id = "division"> / </Button>
-        -->
+        
+        <h4>Calculator History</h4>
+        <ul id = "historyList">
+          <li>test</li>
+        </ul>`
+        
 
-        <!-- <p id="addition"><input id="x">+<input id="y">=<span id="result"></span>
-        </p>
-        <p id="subtraction"><input id="a">-<input id="b">=<span id="subAnswer"></span>
-        </p> --> `
         marie.div.innerHTML=h
         //marie.div.innerHTML += '<p>test</p>'
 
@@ -89,6 +84,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)+parseFloat(y.value)
             }
+            addToHistory(x,y,result)
             listen()
         }
 
@@ -99,6 +95,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)-parseFloat(y.value)
             }
+            addToHistory(x,y,result)
             listen()
         }
 
@@ -109,6 +106,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)*parseFloat(y.value)
             }
+            addToHistory(x,y,result)
             listen()
         }
 
@@ -119,7 +117,13 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)/parseFloat(y.value)
             }
+            addToHistory(x,y,result)
             listen()
+        }
+        
+        function addToHistory(a,b,answer){
+            historyData.push([a,b,answer])
+            console.log(historyData)
         }
 
         //Create buttons for user to pick operation
