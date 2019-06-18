@@ -84,7 +84,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)+parseFloat(y.value)
             }
-            addToHistory(x,y,result)
+            //addToHistory(x,"+",y,result)
             listen()
         }
 
@@ -95,7 +95,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)-parseFloat(y.value)
             }
-            addToHistory(x,y,result)
+            //addToHistory(x,"-",y,result)
             listen()
         }
 
@@ -106,7 +106,7 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)*parseFloat(y.value)
             }
-            addToHistory(x,y,result)
+           // addToHistory(x,"*",y,result)
             listen()
         }
 
@@ -117,14 +117,28 @@ marie.ui=function(div){
             x.onkeyup=y.onkeyup=function(){
                 result.innerText=parseFloat(x.value)/parseFloat(y.value)
             }
-            addToHistory(x,y,result)
+            //addToHistory(x,"/",y,result)
             listen()
         }
         
-        function addToHistory(a,b,answer){
-            historyData.push([a,b,answer])
+
+    //CALCULATOR HISTORY (need to fix functionality)
+        /*function addToHistory(a,op,b,answer){
+            historyData.push([toString(a),toString(op),toString(b),toString(answer)])
             console.log(historyData)
+            updateList()
         }
+
+        function updateList(){
+            var ul = document.getElementById("historyList");
+            for(i=0; i<historyData.length; i++){
+                var li = document.createElement("li")
+                var value = "" + historyData[i][0] + historyData[i][1] + historyData[i][2] + " = " + historyData[i][3]
+                li.appendChild(document.createTextNode(value))
+                ul.appendChild(li)
+            }
+        }*/
+
 
         //Create buttons for user to pick operation
         /*var addButton = document.createElement("Button")    //addition button
