@@ -14,7 +14,13 @@ marie.ui=function(div){
         marie.div.innerHTML=h
 
         //FLOWER SORTING PROJECT
-        //getting error: "Cannot read property 'shape' of null"
+
+        /*NOTES:
+        - getting error: "Cannot read property 'shape' of null"
+        - need to isolate some of the dataset to use as testing data
+        - fix format of output data (should there be probabilities of each species?)
+        - Watch a walkthrough: https://www.youtube.com/watch?v=4vN1tHpCkA0
+        */
 
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
         //tutorial on using TensorFlow.js for creating basic neural network models
