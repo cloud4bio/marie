@@ -14,7 +14,8 @@ marie.ui=function(div){
         marie.div.innerHTML=h
 
         //FLOWER SORTING PROJECT
- 
+        //getting error: "Cannot read property 'shape' of null"
+
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
         //tutorial on using TensorFlow.js for creating basic neural network models
 
@@ -62,11 +63,18 @@ marie.ui=function(div){
            height: 300
           }
           )
+
+
           // Create the model
         const model = createModel();  
         tfvis.show.modelSummary({name: 'Model Summary'}, model)
-
+        
+        const tensorFormat = prepData()
+        const {inputs, labels} = tensorFormat
+        await modelTraining(model, inputs, labels)
+        console.log('test training run')
         }
+
         run()  
         
         function createModel() {
@@ -75,29 +83,30 @@ marie.ui=function(div){
             // Add a hidden layer
             //4 inputs (sepal and petal length and width)
             //1 unit -> 1 weight fo each input value 
-            model.add(tf.layers.dense({inputShape: [4], units: 1})) 
+            model.add(tf.layers.dense({inputShape: [4], units: 1}))                     //maybe wrong dimensions?
             // Add an output layer
             //3 units -> 3 outputs: one for probabiilty of each species of iris
-            model.add(tf.layers.dense({units: 3}));
+            model.add(tf.layers.dense({units: 3}));                                     //maybe wrong dimensions?
             return model;
          }
         
         //need to shuffle, normalize, and convert data to tensors
        async function prepData(){
 
-          const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
+          //fix so that don't have to re-access data within every function
+          const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');    
           const irisFile = await irisOriginalFile.json()  
 
             return tf.tidy(
             () => {  
-                tf.util.shuffle(data)
+                tf.util.shuffle(irisFile)
 
                 //convert data to tensors
                 const inputData =  tf.tensor2d(irisFile.map(flower => [flower.sepal_length, 
                 flower.sepal_width, flower.petal_length, flower.petal_width]),[150,4])
 
-                const outputData = tf.tensor2d(irisFile.map(flower => 
-                ({correctSpecies: flower.species})), [150,1])
+                const outputData = tf.tensor2d(irisFile.map(flower => flower.species), [150,1])
+                //is this sufficient to specify format of output?
 
                 //normalizing input data from 0 to 1
                 //maybe not necessary for this case?
@@ -110,7 +119,7 @@ marie.ui=function(div){
        async function modelTraining(model,inputs,labels){
            model.compile({
                 optimizer: tf.train.adam(),
-                loss: tf.losses.meanSquaredError
+                loss: tf.losses.meanSquaredError    //how does this work when the output label is categorical?
            })
            const batchSize = 20;    //will use sample of dataset of size 20 on each run
            const epochs = 60;       //will run through the data set this number of times
