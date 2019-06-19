@@ -31,6 +31,7 @@ marie.ui=function(div){
           return irisSorted
         }
         
+        /*
         async function toTensor(){
             const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
             const irisFile = await irisOriginalFile.json() 
@@ -43,7 +44,8 @@ marie.ui=function(div){
             return irisTensor
         }  
         
-        toTensor()
+        toTensor()*/
+
         async function run() {
           const irisData = await getData()
           const values = irisData.map(d => ({
@@ -79,6 +81,54 @@ marie.ui=function(div){
             model.add(tf.layers.dense({units: 3}));
             return model;
          }
+        
+        //need to shuffle, normalize, and convert data to tensors
+       async function prepData(){
+
+          const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
+          const irisFile = await irisOriginalFile.json()  
+
+            return tf.tidy(
+            () => {  
+                tf.util.shuffle(data)
+
+                //convert data to tensors
+                const inputData =  tf.tensor2d(irisFile.map(flower => [flower.sepal_length, 
+                flower.sepal_width, flower.petal_length, flower.petal_width]),[150,4])
+
+                const outputData = tf.tensor2d(irisFile.map(flower => 
+                ({correctSpecies: flower.species})), [150,1])
+
+                //normalizing input data from 0 to 1
+                //maybe not necessary for this case?
+                /*const inputMax = inputData.max()
+                const inputMin = inputData.min()
+                const normalizedInputs = inputData.sub(inputMin).div(inputMax.sub(inputMin))*/
+            })  
+       }
+
+       async function modelTraining(model,inputs,labels){
+           model.compile({
+                optimizer: tf.train.adam(),
+                loss: tf.losses.meanSquaredError
+           })
+           const batchSize = 20;    //will use sample of dataset of size 20 on each run
+           const epochs = 60;       //will run through the data set this number of times
+
+           return await model.fit(inputs, labels, {
+             batchSize,
+             epochs,
+             callbacks: tfvis.show.fitCallbacks(
+             { name: 'Training Performance' },
+             ['loss'], 
+             { 
+                height: 200, 
+                callbacks: ['onEpochEnd']
+             }
+             )
+          })
+       }
+
 
     } //close [if(marie.div)]
 }   //close [marie.ui=function(div)]
