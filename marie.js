@@ -2,6 +2,7 @@ console.log('marie loadeds...')
 
 marie={}
 
+
 marie.ui=function(div){ 
     marie.div=div||document.getElementById('workSpace')
 
