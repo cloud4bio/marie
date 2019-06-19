@@ -9,7 +9,14 @@ marie.ui=function(div){
 
     if(marie.div){
 
+        //Header and text
+        let h = `<h3>Flower Sorting Project</h3>`
+        marie.div.innerHTML=h
+
         //FLOWER SORTING PROJECT
+
+        //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
+        //tutorial on using TensorFlow.js for creating basic neural network models
 
         async function getData() {
           const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
@@ -31,7 +38,7 @@ marie.ui=function(div){
           }))
 
           tfvis.render.scatterplot(
-          {name: 'Sepal Width vs Length'},
+          {name: 'TEST GRAPH: Sepal Width vs Length'},
           {values}, 
           {
            xLabel: 'Sepal Length',
@@ -39,21 +46,30 @@ marie.ui=function(div){
            height: 300
           }
           )
+
+          // Create the model
+        const model = createModel();  
+        tfvis.show.modelSummary({name: 'Model Summary'}, model)
+
         }
         run()  
-       
-
-        //var irisData = JSON.parse(irisCleaned);
-        //alert(irisData[0].sepalLength);
-
-        //Header and text
-        let h = `<h3>Flower Sorting Project</h3>`
-        //document.addEventListener('DOMContentLoaded', function(){console.log("ran")})
-
-        marie.div.innerHTML=h
         
-    }
-}
+        function createModel() {
+        // Create a sequential model
+        const model = tf.sequential() 
+         // Add a hidden layer
+         //4 inputs (sepal and petal length and width)
+         //1 unit -> 1 weight fo each input value 
+        model.add(tf.layers.dense({inputShape: [4], units: 1})) 
+        // Add an output layer
+        //3 units -> 3 outputs: one for probabiilty of each species of iris
+        model.add(tf.layers.dense({units: 3}));
+        return model;
+        }
+        
+
+    } //close if(marie.div)
+}   //close marie.ui=function(div)
 
 //On page startup
 window.onload=function(){
