@@ -7,6 +7,15 @@ marie.ui=function(div){
     marie.div=div||document.getElementById('workSpace')
 
     if(marie.div){
+        
+        //FLOWER SORTING PROJECT
+        //Header and text
+
+        
+        
+        //CALCULATOR CODE
+
+        /*
         var historyData = []
         //Header and text 
         //Create buttons for user to pick operation
@@ -32,12 +41,6 @@ marie.ui=function(div){
         
 
         marie.div.innerHTML=h
-        //marie.div.innerHTML += '<p>test</p>'
-
-       /* document.getElementById("addition").onclick = function(){add()} 
-        document.getElementById("subtraction").onclick = function(){subtract()}
-        document.getElementById("division").onclick = function(){divide()}
-        document.getElementById("multiplication").onclick = function(){multiply()}*/
 
         function listen(){
         document.getElementById("addition").onclick = function(){changeOp("addition")}
@@ -47,8 +50,6 @@ marie.ui=function(div){
         }
         
         listen()
-      /* document.getElementById("addition").addEventListener("onclick", add())
-        document.getElementById("subtraction").addEventListener("onclick", subtract())*/
         
         function changeOp(operation){
             listen()
@@ -139,30 +140,6 @@ marie.ui=function(div){
                 ul.appendChild(li)
             }
         }*/
-
-
-        //Create buttons for user to pick operation
-        /*var addButton = document.createElement("Button")    //addition button
-        addButton.innerHTML = "addition"
-        document.body.appendChild(addButton)    
-        //addButton.onClick = function(){console.log("test")}
-        //addButton.onClick = add()
-        
-        var subtractButton = document.createElement("Button")   //subtraction button
-        subtractButton.innerHTML = "subtraction"
-        document.body.appendChild(subtractButton)  
-
-        var multiplyButton = document.createElement("Button")   //multiplication button
-        multiplyButton.innerHTML = "multiplication"
-        document.body.appendChild(multiplyButton)   
-
-        var divideButton = document.createElement("Button")     //division button
-        divideButton.innerHTML = "division"
-        document.body.appendChild(divideButton)   
-        x.onkeyup=y.onkeyup=function(){
-            result.innerText=parseFloat(x.value)+parseFloat(y.value)
-        }
-        */
         
     }
 }
