@@ -14,13 +14,14 @@ marie.ui=function(div){
         marie.div.innerHTML=h
 
         //FLOWER SORTING PROJECT
-
+ 
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
         //tutorial on using TensorFlow.js for creating basic neural network models
 
         async function getData() {
           const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
-          const irisFile = await irisOriginalFile.json();  
+          const irisFile = await irisOriginalFile.json()  
+          console.log("Dataset size: " + irisFile.length)
           const irisSorted = irisFile.map(flower => ({
             sepalLen: flower.sepalLength,
             sepalWid: flower.sepalWidth, 
@@ -29,7 +30,20 @@ marie.ui=function(div){
             correctSpecies: flower.species,}))
           return irisSorted
         }
-          
+        
+        async function toTensor(){
+            const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
+            const irisFile = await irisOriginalFile.json() 
+            const irisTensor= tf.tensor2d(irisFile.map(flower => [
+            flower.sepal_length, flower.sepal_width, flower.petal_length, flower.petal_width
+            ]),[150,4])     
+            //144 data items in iris dataset, with 4 values each
+            //console.log((irisTensor.shape))
+            irisTensor.data().then(data => console.log(data))
+            return irisTensor
+        }  
+        
+        toTensor()
         async function run() {
           const irisData = await getData()
           const values = irisData.map(d => ({
@@ -46,7 +60,6 @@ marie.ui=function(div){
            height: 300
           }
           )
-
           // Create the model
         const model = createModel();  
         tfvis.show.modelSummary({name: 'Model Summary'}, model)
@@ -55,21 +68,20 @@ marie.ui=function(div){
         run()  
         
         function createModel() {
-        // Create a sequential model
-        const model = tf.sequential() 
-         // Add a hidden layer
-         //4 inputs (sepal and petal length and width)
-         //1 unit -> 1 weight fo each input value 
-        model.add(tf.layers.dense({inputShape: [4], units: 1})) 
-        // Add an output layer
-        //3 units -> 3 outputs: one for probabiilty of each species of iris
-        model.add(tf.layers.dense({units: 3}));
-        return model;
-        }
-        
+            // Create a sequential model
+            const model = tf.sequential() 
+            // Add a hidden layer
+            //4 inputs (sepal and petal length and width)
+            //1 unit -> 1 weight fo each input value 
+            model.add(tf.layers.dense({inputShape: [4], units: 1})) 
+            // Add an output layer
+            //3 units -> 3 outputs: one for probabiilty of each species of iris
+            model.add(tf.layers.dense({units: 3}));
+            return model;
+         }
 
-    } //close if(marie.div)
-}   //close marie.ui=function(div)
+    } //close [if(marie.div)]
+}   //close [marie.ui=function(div)]
 
 //On page startup
 window.onload=function(){
