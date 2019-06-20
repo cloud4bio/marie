@@ -33,17 +33,47 @@ getData()
 
 	marie.irisAxes=async function(){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
    	 	let irises = await getData()
-   	 	let x_values = irises.map(d=>{return{
-        	x:d.sepalLen,
-    	}})
-    	let y_values = irises.map(d=>{return{
-        	y:d.sepalWid,
-    	}})
+   	 	var trace = {
+   	 		x : [],
+   	 		y : [],
+   	 		mode : 'markers',
+   	 		type : 'scatter',
+  			marker: { size: 4 }
+   	 	}
+
+   	 	irises.forEach((d,i) => {
+   	 		trace.x[i] = d.sepalLen
+   	 		trace.y[i] = d.sepalWid
+   	 	})
+
+		var layout = {
+  			margin: {t:0},
+  			title:{text:'Sepal Width vs Length'},
+
+  			xaxis: {
+    		title: {
+      			text: 'Sepal Length',
+      			font: {
+        			family: 'Calibri',
+        			size: 14,
+        			color: 'Black'
+      			}
+    		},
+  		},
+  			yaxis: {
+    			title: {
+      			text: 'Sepal Width',
+      			font: {
+        			family: 'Calibri',
+        			size: 14,
+        			color: 'Black'
+      			}
+    		}
+  		}
+	};
+	
 		TESTER = document.getElementById('tester');
-		Plotly.plot( TESTER, [{
-			x: [x_values],
-			y: [y_values] }], {
-			margin: { t: 0 } } );
+		Plotly.plot( TESTER, [trace], layout );
 	}
 
 marie.irisAxes()
