@@ -41,11 +41,6 @@ getData()
   			marker: { size: 4 }
    	 	}
 
-   	 	irises.forEach((d,i) => {
-   	 		trace.x[i] = d.sepalLen
-   	 		trace.y[i] = d.sepalWid
-   	 	})
-
 		var layout = {
   			margin: {t:0},
   			title:{text:'Sepal Width vs Length'},
@@ -71,9 +66,27 @@ getData()
     		}
   		}
 	};
-	
+
 		TESTER = document.getElementById('tester');
-		Plotly.plot( TESTER, [trace], layout );
+
+		var x_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
+		var y_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
+
+	
+		var i, j
+		for (i = 0; i < x_axis.length; i++) {
+			for (j = 0; j < y_axis.length; j++) {
+				irises.forEach((d,z) => {
+					console.log(x_axis[i])
+   	 				trace.x[z] = d.x_axis[i]	//TYPE ERROR ("cannot read property '0' of undefined")
+   	 				trace.y[z] = d.y_axis[j]
+   	 			})
+   	 			Plotly.plot( TESTER, [trace], layout );
+			}
+		}
+   	 	
+		
+		
 	}
 
 marie.irisAxes()
