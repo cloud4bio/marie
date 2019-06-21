@@ -13,8 +13,10 @@ survey.ui=function(div){
         let h = `<h3>Risk Prediction Questionnaire</h3>`
         let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" targe = "_blank"> the GitHub Wiki</a>.</p>`
         survey.div.innerHTML=h+more
-
-
+        
+        var resultButton = document.createElement('button')
+        resultButton.innerHTML = "Results"
+        document.body.appendChild(resultButton)
         /*Reading from JSON test
         myObj = {Age: 40, FamilyHistory: 'Y', PreviousDiagnosis: 'N', Children: 'Y', Mammogram: 'N'};
         myJSON = JSON.stringify(myObj);

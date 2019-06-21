@@ -6,20 +6,20 @@
         - implement plotly.js for visualizations
         */
 
-console.log('marie loadeds...')
+console.log('flower model loadeds...')
 
 
-marie={}
+flowerUI={}
 
 
-marie.ui=function(div){ 
-    marie.div=div||document.getElementById('workSpace')
+flowerUI.ui=function(div){ 
+    flowerUI.div=div||document.getElementById('workSpace')
 
-    if(marie.div){
-
+    if(flowerUI.div){
+        
         //Header and text
         let h = `<h3>Flower Sorting Project</h3>`
-        marie.div.innerHTML=h
+        flowerUI.div.innerHTML=h
 
         //FLOWER SORTING PROJECT
 
@@ -36,7 +36,6 @@ marie.ui=function(div){
           console.log(irisSorted)
           return irisSorted
         }
-
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
         //tutorial on using TensorFlow.js for creating basic neural network models
 
@@ -56,34 +55,35 @@ marie.ui=function(div){
         
         toTensor()*/
 
-        async function run() {
-          const irisData = await getData()
-          const values = irisData.map(d => ({
-          x: d.sepalLen,
-          y: d.sepalWid,
-          }))
-
-          tfvis.render.scatterplot(
-          {name: 'TEST GRAPH: Sepal Width vs Length'},
-          {values}, 
-          {
-           xLabel: 'Sepal Length',
-           yLabel: 'Sepal Width',
-           height: 300
-          }
-          )
-
-
-          // Create the model
-        const model = createModel();  
-        
-        const tensorFormat = prepData()
-        const {inputs, labels} = tensorFormat
-        await modelTraining(model, inputs, labels)
-        console.log('test training run')
+        /*Splitting data into a training set (size 130) and  testing set (size 20)*/
+        async function splitData(){
+                const irisData = await getData()
+                var trainingData = []
+                var testingData = []
+                for(i = 0; i < irisData.length; i ++){
+                        if(i<130){
+                                trainingData.push(irisData[i])
+                        }
+                        else{
+                                testingData.push(irisData[i])
+                        }
+                }
+                console.log("SPLITTING DATA")
+                console.log(testingData)
+                return [trainingData, testingData]
         }
 
-        run()  
+        splitData()
+
+        async function run() {
+                const irisData = await getData()
+                const model = createModel();  
+
+                const tensorFormat = prepData()
+                const {inputs, labels} = tensorFormat
+                await modelTraining(model, inputs, labels)
+                console.log('test training run')
+        }
         
         function createModel() {
             // Create a sequential model
@@ -114,6 +114,7 @@ marie.ui=function(div){
                 flower.sepal_width, flower.petal_length, flower.petal_width]),[150,4])
 
                 const outputData = tf.tensor2d(irisFile.map(flower => flower.species), [150,1])
+                console.log(outputData)
                 //is this sufficient to specify format of output?
 
                 //normalizing input data from 0 to 1
@@ -134,16 +135,15 @@ marie.ui=function(div){
 
            return await model.fit(inputs, labels, {
              batchSize,
-             epochs,
-             callbacks: tfvis.show.fitCallbacks(
-             { name: 'Training Performance' },
-             ['loss'], 
-             { 
-                height: 200, 
-                callbacks: ['onEpochEnd']
-             }
-             )
+             epochs
           })
        }
+    }
+}
+
+//On page startup
+window.onload=function(){
+    if(document.getElementById('workSpace')){
+        flowerUI.ui(document.getElementById('workSpace'))    
     }
 }
