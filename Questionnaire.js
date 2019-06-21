@@ -60,6 +60,9 @@ survey.ui=function(div){
         localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
         console.log(questionsJSON)
 
+        var form = document.createElement("form");  
+        document.body.appendChild(form);
+
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
         retrievedObj = JSON.parse(readText);
@@ -67,6 +70,10 @@ survey.ui=function(div){
         for(i = 0; i < retrievedObj.length; i++){
             currQuestion = retrievedObj[i].Question
             console.log(currQuestion)
+
+            var newDiv = document.createElement('div');
+            document.body.appendChild(newDiv);
+
             var quest = document.createTextNode(currQuestion);
             document.body.appendChild(quest);
 
@@ -80,9 +87,20 @@ survey.ui=function(div){
                     //console.log(options[j])
                     var answerChoice = document.createTextNode(options[j])
                     document.body.appendChild(answerChoice);
+
+                    var x = document.createElement("INPUT");
+                    x.setAttribute("type", "radio");
+
+                    var choice = document.createElement("input")
+                    choice.setAttribute("type","radio")
+                    document.body.appendChild(choice)                 
+                    
                 }
             }
-            `<!--<input type="radio" name="choice" value="Scripting"> Scripting-->`
+
+            var guidance = retrievedObj[i].help
+            var helpText = document.createTextNode(guidance)
+            document.body.appendChild(helpText)
         }
     
         //var questionDiv = document.createElement('div');
