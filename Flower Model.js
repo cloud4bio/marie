@@ -33,7 +33,7 @@ flowerUI.ui=function(div){
             petalLen: flower.petalLength,
             petalWid: flower.petalWidth,
             correctSpecies: flower.species,}))
-          console.log(irisSorted)
+          //console.log(irisSorted)
           return irisSorted
         }
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
@@ -56,35 +56,32 @@ flowerUI.ui=function(div){
         toTensor()*/
 
         /*Splitting data into a training set (size 130) and  testing set (size 20)*/
-        async function splitData(){
+        async function trainData(){
                 const irisData = await getData()
                 var trainingData = []
-                var testingData = []
-                for(i = 0; i < irisData.length; i ++){
-                        if(i<130){
-                                trainingData.push(irisData[i])
-                        }
-                        else{
-                                testingData.push(irisData[i])
-                        }
+                for(i = 0; i < 130; i ++){
+                     trainingData.push(irisData[i])     
                 }
                 console.log("SPLITTING DATA")
-                console.log(testingData)
-                return [trainingData, testingData]
+                console.log(trainingData)
+                return trainingData
         }
 
-        splitData()
+        trainData()
 
         async function run() {
                 const irisData = await getData()
+                trainingData = await trainData()
+
                 const model = createModel();  
 
-                const tensorFormat = prepData()
+                const tensorFormat = prepData(trainingData)
+                //console.log("tensors" + tensorFormat)
                 const {inputs, labels} = tensorFormat
                 await modelTraining(model, inputs, labels)
-                console.log('test training run')
+                //console.log('test training run')
         }
-        
+        run()   
         function createModel() {
             // Create a sequential model
             const model = tf.sequential() 
@@ -98,30 +95,24 @@ flowerUI.ui=function(div){
             return model;
          }
         
-        //need to shuffle, normalize, and convert data to tensors
-       async function prepData(){
+
+         //need to shuffle, normalize, and convert data to tensors
+       async function prepData(input){
 
           //fix so that don't have to re-access data within every function
-          const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');    
-          const irisFile = await irisOriginalFile.json()  
+          //const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');    
+          //const irisFile = await irisOriginalFile.json()  
 
             return tf.tidy(
             () => {  
-                tf.util.shuffle(irisFile)
+                tf.util.shuffle(input)
 
                 //convert data to tensors
-                const inputData =  tf.tensor2d(irisFile.map(flower => [flower.sepal_length, 
-                flower.sepal_width, flower.petal_length, flower.petal_width]),[150,4])
+                const inputData =  tf.tensor2d(input.map(flower => [flower.sepal_length, 
+                flower.sepal_width, flower.petal_length, flower.petal_width]),[130,4])
+                console.log("tensors" + inputData)              //data format incorrect ("NaN")
 
-                const outputData = tf.tensor2d(irisFile.map(flower => flower.species), [150,1])
-                console.log(outputData)
-                //is this sufficient to specify format of output?
-
-                //normalizing input data from 0 to 1
-                //maybe not necessary for this case?
-                /*const inputMax = inputData.max()
-                const inputMin = inputData.min()
-                const normalizedInputs = inputData.sub(inputMin).div(inputMax.sub(inputMin))*/
+                const outputData = tf.tensor2d(input.map(flower => flower.species), [130,1])
             })  
        }
 
