@@ -29,10 +29,11 @@ marie.ui=function(div){
           return irisSorted
         }
 
-getData()
+//getData()
 
 	marie.irisAxes=async function(){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
    	 	let irises = await getData()
+
    	 	var trace = {
    	 		x : [],
    	 		y : [],
@@ -72,14 +73,32 @@ getData()
 		var x_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
 		var y_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
 
+		//FOR A SINGLE GRAPH
+		/*let x_values = irises.map(d=>{return{
+        	x:d.sepalLen,
+    	}})
+    	
+    	let y_values = irises.map(d=>{return{
+        	y:d.sepalWid,
+    	}})
+
+		irises.forEach((d,i) => {
+   	 		trace.x[i] = d.sepalLen
+   	 		trace.y[i] = d.sepalWid
+   	 	})
+
+		Plotly.plot( TESTER, [trace], layout )*/
 	
+		//FOR 16 MINI GRAPHS
 		var i, j
 		for (i = 0; i < x_axis.length; i++) {
 			for (j = 0; j < y_axis.length; j++) {
 				irises.forEach((d,z) => {
 					console.log(x_axis[i])
-   	 				trace.x[z] = d.x_axis[i]	//TYPE ERROR ("cannot read property '0' of undefined")
-   	 				trace.y[z] = d.y_axis[j]
+					var x_feature = d.x_axis[i] //TYPE ERROR ("cannot read property '0' of undefined")
+					var y_feature = d.y_axis[j]
+   	 				trace.x[z] = x_feature	
+   	 				trace.y[z] = y_feature
    	 			})
    	 			Plotly.plot( TESTER, [trace], layout );
 			}

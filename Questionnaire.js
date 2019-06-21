@@ -61,12 +61,34 @@ survey.ui=function(div){
         console.log(questionsJSON)
 
         // Retrieving data:
-        readText = localStorage.getItem("questionsJSON");
+        readText = localStorage.getItem("questionsJSON");   //this would probably be a link
         retrievedObj = JSON.parse(readText);
         var i
         for(i = 0; i < retrievedObj.length; i++){
-            console.log(retrievedObj[i].Question)
+            currQuestion = retrievedObj[i].Question
+            console.log(currQuestion)
+            var quest = document.createTextNode(currQuestion);
+            document.body.appendChild(quest);
+
+            //if multiple choice
+            var type = retrievedObj[i].Type
+            if(type == 'M'){
+                //console.log('m')
+                options = retrievedObj[i].Options
+                var j
+                for(j = 0; j < options.length; j++){
+                    //console.log(options[j])
+                    var answerChoice = document.createTextNode(options[j])
+                    document.body.appendChild(answerChoice);
+                }
+            }
+            `<!--<input type="radio" name="choice" value="Scripting"> Scripting-->`
         }
+    
+        //var questionDiv = document.createElement('div');
+        //document.body.appendChild(questionDiv);
+
+
     }   //close [if(survey.div)]
 
 } //close[survey.ui=function(div)]
