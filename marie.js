@@ -70,27 +70,32 @@ marie.ui=function(div){
 
 		TESTER = document.getElementById('tester');
 
-		var x_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
-		var y_axis = ['sepalLength','sepalWidth','petalLength','petalWidth']
-
-		//FOR A SINGLE GRAPH
+		//var test_x = ['sepalLength','sepalWidth','petalLength','petalWidth']
+		var x_axis = Object.keys(irises[0])[0]
+		console.log(x_axis)
+		//var test_y = ['sepalLength','sepalWidth','petalLength','petalWidth']
+		var y_axis = Object.keys(irises[0])[1]
+		console.log(y_axis)
+		
 		/*let x_values = irises.map(d=>{return{
-        	x:d.sepalLen,
+        	x:d.x_axis,
     	}})
     	
     	let y_values = irises.map(d=>{return{
-        	y:d.sepalWid,
-    	}})
+        	y:d.y_axis,
+    	}});*/
 
+		//FOR A SINGLE GRAPH
 		irises.forEach((d,i) => {
+			console.log(d.temp)
    	 		trace.x[i] = d.sepalLen
    	 		trace.y[i] = d.sepalWid
    	 	})
 
-		Plotly.plot( TESTER, [trace], layout )*/
-	
+		Plotly.plot( TESTER, [trace], layout )
+
 		//FOR 16 MINI GRAPHS
-		var i, j
+		/*var i, j
 		for (i = 0; i < x_axis.length; i++) {
 			for (j = 0; j < y_axis.length; j++) {
 				irises.forEach((d,z) => {
@@ -102,7 +107,7 @@ marie.ui=function(div){
    	 			})
    	 			Plotly.plot( TESTER, [trace], layout );
 			}
-		}
+		}*/
    	 	
 		
 		

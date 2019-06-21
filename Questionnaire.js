@@ -11,7 +11,8 @@ survey.ui=function(div){
 
         //Header and text
         let h = `<h3>Risk Prediction Questionnaire</h3>`
-        survey.div.innerHTML=h
+        let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" targe = "_blank"> the GitHub Wiki</a>.</p>`
+        survey.div.innerHTML=h+more
 
 
         /*Reading from JSON test
@@ -88,20 +89,16 @@ survey.ui=function(div){
                     var answerChoice = document.createTextNode(options[j])
                     document.body.appendChild(answerChoice);
 
-                    var x = document.createElement("INPUT");
-                    x.setAttribute("type", "radio");
-
                     var choice = document.createElement("input")
                     choice.setAttribute("type","radio")
                     document.body.appendChild(choice)                 
-                    
                 }
             }
 
             var guidance = retrievedObj[i].help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
-        }
+        }   //close for loop through list of questions in JSON
     
         //var questionDiv = document.createElement('div');
         //document.body.appendChild(questionDiv);
