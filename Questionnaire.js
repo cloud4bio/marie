@@ -57,7 +57,7 @@ survey.ui=function(div){
         questionsObj = 
         [
             {QuestionID: 314, Question: 'Family History?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
-            {QuestionID: 315, Question: 'Children?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'}
+            {QuestionID: 315, Question: 'Children?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
         ]
         questionsJSON = JSON.stringify(questionsObj);
         localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
@@ -69,6 +69,62 @@ survey.ui=function(div){
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
         retrievedObj = JSON.parse(readText);
+
+        //without loop, just first question
+        currQuestion = retrievedObj[0].Question
+        console.log(currQuestion)
+
+        var newDiv = document.createElement('div');
+        document.body.appendChild(newDiv);
+
+        var quest = document.createTextNode(currQuestion);
+        document.body.appendChild(quest);
+        
+        //if multiple choice
+        var type = retrievedObj[0].Type
+          if(type == 'M'){
+             //console.log('m')
+             options = retrievedObj[0].Options
+            
+             var firstAnswerChoice = document.createTextNode(options[0])
+             document.body.appendChild(firstAnswerChoice);
+
+             var firstBubble = document.createElement("input")
+             firstBubble.setAttribute("type", "radio")
+             firstBubble.setAttribute("id", "firstY")
+             document.body.appendChild(firstBubble) 
+             console.log(document.getElementById("firstY"))
+
+             var secondAnswerChoice = document.createTextNode(options[1])
+             document.body.appendChild(secondAnswerChoice);
+
+             var secondBubble = document.createElement("input")
+             secondBubble.setAttribute("type", "radio")     
+             secondBubble.setAttribute("id", "firstN")      
+             document.body.appendChild(secondBubble) 
+                             
+          }
+
+            var guidance = retrievedObj[0].help
+            var helpText = document.createTextNode(guidance)
+            document.body.appendChild(helpText)
+
+            document.getElementById("firstY").onclick  
+            = function()
+            {console.log("clicked yes"); 
+            var clickMessage = document.createTextNode("Clicked yes")
+               document.body.appendChild(clickMessage);
+            } 
+
+            document.getElementById("firstN").onclick  
+            = function()
+            {console.log("clicked no"); 
+            var clickMessage = document.createTextNode("Clicked no")
+               document.body.appendChild(clickMessage);
+            } 
+        
+        //loop through all questions in JSON
+        /*
         var i
         for(i = 0; i < retrievedObj.length; i++){
             currQuestion = retrievedObj[i].Question
@@ -100,7 +156,7 @@ survey.ui=function(div){
             var guidance = retrievedObj[i].help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
-        }   //close for loop through list of questions in JSON
+        }   */
     
         //var questionDiv = document.createElement('div');
         //document.body.appendChild(questionDiv);
