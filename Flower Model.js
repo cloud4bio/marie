@@ -6,6 +6,37 @@
         - implement plotly.js for visualizations
         */
 
+console.log('marie loadeds...')
+
+
+marie={}
+
+
+marie.ui=function(div){ 
+    marie.div=div||document.getElementById('workSpace')
+
+    if(marie.div){
+
+        //Header and text
+        let h = `<h3>Flower Sorting Project</h3>`
+        marie.div.innerHTML=h
+
+        //FLOWER SORTING PROJECT
+
+        async function getData() {
+          const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
+          const irisFile = await irisOriginalFile.json()  
+          console.log("Dataset size: " + irisFile.length)
+          const irisSorted = irisFile.map(flower => ({
+            sepalLen: flower.sepalLength,
+            sepalWid: flower.sepalWidth, 
+            petalLen: flower.petalLength,
+            petalWid: flower.petalWidth,
+            correctSpecies: flower.species,}))
+          console.log(irisSorted)
+          return irisSorted
+        }
+
         //portions of code adapted from https://codelabs.developers.google.com/codelabs/tfjs-training-regression/#0
         //tutorial on using TensorFlow.js for creating basic neural network models
 
@@ -45,7 +76,6 @@
 
           // Create the model
         const model = createModel();  
-        tfvis.show.modelSummary({name: 'Model Summary'}, model)
         
         const tensorFormat = prepData()
         const {inputs, labels} = tensorFormat
@@ -115,3 +145,5 @@
              )
           })
        }
+    }
+}
