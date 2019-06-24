@@ -54,23 +54,47 @@ survey.ui=function(div){
             ... [other questions]
         ]*/
 
-        /*questionsObj = 
+        questionsObj = 
         [
-            {QuestionID: 314, Question: 'Family History?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
-            {QuestionID: 315, Question: 'Children?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
+           {
+              "ID": 314,
+              "Question": "Family History?",
+              "Type": "radio",
+              "Options": [
+                 "Yes",
+                 "No"
+              ],
+              "onDone": "315",
+              "help": "Clarifying Information"
+           },
+           {
+              "ID": 315,
+              "Question": "Children?",
+              "Type": "radio",
+              "Options": [
+                 "Yes",
+                 "No"
+              ],
+              "onDone": "none",
+              "help": "Clarifying Information"
+           }
         ]
         questionsJSON = JSON.stringify(questionsObj);
         localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
         console.log(questionsJSON)
 
         var form = document.createElement("form");  
-        document.body.appendChild(form);*/
+        document.body.appendChild(form);
 
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
         console.log(readText)
         retrievedObj = JSON.parse(readText);
 
+        function gotoQuest(givenID){
+            let newQuest = retrievedObj.filter(quest => quest.ID == givenID)
+            console.log(newQuest)
+        }
         //without loop, just first question
         currQuestion = retrievedObj[0].Question
         console.log(currQuestion)
@@ -83,7 +107,7 @@ survey.ui=function(div){
         
         //if multiple choice
         var type = retrievedObj[0].Type
-          if(type == 'select'){
+          if(type == 'radio'){
              //console.log('m')
              options = retrievedObj[0].Options
             
@@ -91,7 +115,7 @@ survey.ui=function(div){
              document.body.appendChild(firstAnswerChoice);
 
              var firstBubble = document.createElement("input")
-             firstBubble.setAttribute("type", "select")
+             firstBubble.setAttribute("type", "radio")
              firstBubble.setAttribute("id", "firstY")
              document.body.appendChild(firstBubble) 
              console.log(document.getElementById("firstY"))
@@ -100,7 +124,7 @@ survey.ui=function(div){
              document.body.appendChild(secondAnswerChoice);
 
              var secondBubble = document.createElement("input")
-             secondBubble.setAttribute("type", "select")     
+             secondBubble.setAttribute("type", "radio")     
              secondBubble.setAttribute("id", "firstN")      
              document.body.appendChild(secondBubble) 
                              
@@ -110,6 +134,7 @@ survey.ui=function(div){
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
 
+            gotoQuest(retrievedObj[0].onDone)
            /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
