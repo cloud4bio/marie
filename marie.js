@@ -30,36 +30,41 @@ marie.ui=function(div){
 
 //getData()
 
-	marie.irisAxes=async function(){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
+	marie.irisAxes=async function(species){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
    	 	let irises = await getData()
-
-   	 	var trace_seposa = {
-   	 		x : [],
-   	 		y : [],
-   	 		//correctSpecies : [],
-   	 		mode : 'markers',
-   	 		type : 'scatter',
-  			marker: { color: 'rgb(200, 50, 100)', size: 4 }
+		var trace = {}
+		if(species == 'seposa'){
+			trace = {
+   	 			x : [],
+   	 			y : [],
+   	 			//correctSpecies : [],
+   	 			mode : 'markers',
+   	 			type : 'scatter',
+  				marker: { color: 'rgb(200, 50, 100)', size: 4 }
+   	 		}
+		}
+		else if(species == 'versicolor'){
+			trace = {
+				x : [],
+				y : [],
+				//correctSpecies : [],
+				mode : 'markers',
+				type : 'scatter',
+				marker: { color: 'rgb(20, 220, 30)', size: 4 }
+			}
+		}
+		else if(species == 'virginica'){
+			trace = {
+				x : [],
+				y : [],
+				//correctSpecies : [],
+				mode : 'markers',
+				type : 'scatter',
+				marker: { color: 'rgb(100, 50, 200)', size: 4 }
+			}
    	 	}
 
-		var trace_virginica = {
-   	 		x : [],
-   	 		y : [],
-   	 		//correctSpecies : [],
-   	 		mode : 'markers',
-   	 		type : 'scatter',
-  			marker: { color: 'rgb(100, 50, 200)', size: 4 }
-   	 	}
-
-   	 	var trace_versicolor = {
-   	 		x : [],
-   	 		y : [],
-   	 		//correctSpecies : [],
-   	 		mode : 'markers',
-   	 		type : 'scatter',
-  			marker: { color: 'rgb(20, 220, 30)', size: 4 }
-   	 	}
-   	 	
+		
 		var layout = {
   			margin: {t:0},
   			title:{text:'Sepal Width vs Length'},
@@ -106,18 +111,21 @@ marie.ui=function(div){
 		//FOR A SINGLE GRAPH
 		irises.forEach((d,i) => {
 			console.log(d.temp)
-   	 		trace_versicolor.x[i] = d.sepalLen
-   	 		trace_versicolor.y[i] = d.sepalWid
+   	 		trace.x[i] = d.sepalLen
+   	 		trace.y[i] = d.sepalWid
    	 		//trace_seposa.correctSpecies[i] = d.correctSpecies
    	 	})
 
 		if(typeof(Plotly) == 'undefined'){
 			await marie.getScript('https://cdn.plot.ly/plotly-latest.min.js')
 		}
-		marie.irisAxes.chart = Plotly.plot( TESTER, [trace_versicolor], layout )
+
+		marie.irisAxes.chart = Plotly.plot( TESTER, [trace], layout )
 }
 
-marie.irisAxes(); 
+marie.irisAxes('seposa'); 
+marie.irisAxes('virginica')
+marie.irisAxes("versicolor")
 
 //Jonas's table code
 
