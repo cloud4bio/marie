@@ -14,6 +14,10 @@ marie.ui=function(div){
         marie.div.innerHTML=h
         //FLOWER SORTING PROJECT
 
+		const setosas = []
+        const versicolors = []
+        const virginicas = []
+
         async function getData() {
           const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
           const irisFile = await irisOriginalFile.json()  
@@ -24,7 +28,22 @@ marie.ui=function(div){
             petalLen: flower.petalLength,
             petalWid: flower.petalWidth,
             correctSpecies: flower.species,}))
-          console.log(irisSorted)
+          irisSorted.forEach(function(curr){
+          	//console.log(curr.correctSpecies)
+			if(curr.correctSpecies == 'setosa'){
+				setosas.push(curr)
+			}
+			else if(curr.correctSpecies == 'virginica'){
+				virginicas.push(curr)
+			}
+			else if(curr.correctSpecies == 'versicolor'){
+				versicolors.push(curr)
+			}
+          	//if(correctSpecies == 'seposa'){
+          //}
+          })
+          
+          //console.log(irisSorted)
           return irisSorted
         }
 
@@ -33,13 +52,14 @@ marie.ui=function(div){
 	marie.irisAxes=async function(species){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
    	 	let irises = await getData()
 		var trace = {}
-		if(species == 'seposa'){
+		if(species == 'setosa'){
 			trace = {
    	 			x : [],
    	 			y : [],
    	 			//correctSpecies : [],
    	 			mode : 'markers',
    	 			type : 'scatter',
+   	 			name: 'setosas',
   				marker: { color: 'rgb(200, 50, 100)', size: 4 }
    	 		}
 		}
@@ -50,6 +70,7 @@ marie.ui=function(div){
 				//correctSpecies : [],
 				mode : 'markers',
 				type : 'scatter',
+				name: 'versicolors',
 				marker: { color: 'rgb(20, 220, 30)', size: 4 }
 			}
 		}
@@ -60,6 +81,7 @@ marie.ui=function(div){
 				//correctSpecies : [],
 				mode : 'markers',
 				type : 'scatter',
+				name: 'virginicas',
 				marker: { color: 'rgb(100, 50, 200)', size: 4 }
 			}
    	 	}
@@ -95,10 +117,10 @@ marie.ui=function(div){
 
 		//var test_x = ['sepalLength','sepalWidth','petalLength','petalWidth']
 		var x_axis = Object.keys(irises[0])[0]
-		console.log(x_axis)
+		//console.log(x_axis)
 		//var test_y = ['sepalLength','sepalWidth','petalLength','petalWidth']
 		var y_axis = Object.keys(irises[0])[1]
-		console.log(y_axis)
+		//console.log(y_axis)
 		
 		/*let x_values = irises.map(d=>{return{
         	x:d.x_axis,
@@ -109,12 +131,31 @@ marie.ui=function(div){
     	}});*/
 
 		//FOR A SINGLE GRAPH
-		irises.forEach((d,i) => {
-			console.log(d.temp)
+
+		if(species == 'setosa'){
+			setosas.forEach((d,i) => {
+			//console.log(d.temp)
    	 		trace.x[i] = d.sepalLen
    	 		trace.y[i] = d.sepalWid
    	 		//trace_seposa.correctSpecies[i] = d.correctSpecies
-   	 	})
+   	 		})	
+		}
+		else if(species == 'virginica'){
+			virginicas.forEach((d,i) => {
+			//console.log(d.temp)
+   	 		trace.x[i] = d.sepalLen
+   	 		trace.y[i] = d.sepalWid
+   	 		//trace_seposa.correctSpecies[i] = d.correctSpecies
+   	 		})	
+		}
+		else if(species == 'versicolor'){
+			versicolors.forEach((d,i) => {
+			//console.log(d.temp)
+   	 		trace.x[i] = d.sepalLen
+   	 		trace.y[i] = d.sepalWid
+   	 		//trace_seposa.correctSpecies[i] = d.correctSpecies
+   	 		})	
+		}
 
 		if(typeof(Plotly) == 'undefined'){
 			await marie.getScript('https://cdn.plot.ly/plotly-latest.min.js')
@@ -123,7 +164,8 @@ marie.ui=function(div){
 		marie.irisAxes.chart = Plotly.plot( TESTER, [trace], layout )
 }
 
-marie.irisAxes('seposa'); 
+marie.irisAxes('setosa'); 
+console.log(setosas)
 marie.irisAxes('virginica')
 marie.irisAxes("versicolor")
 
@@ -146,7 +188,7 @@ marie.codeLabIris=async function(){
      })
 
      let species = Object.keys(sp)
-	 console.log(species)
+	 //console.log(species)
     //debugger
 
 
