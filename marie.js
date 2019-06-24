@@ -12,7 +12,6 @@ marie.ui=function(div){
         //Header and text
         let h = `<h3>Flower Sorting Project</h3>`
         marie.div.innerHTML=h
-
         //FLOWER SORTING PROJECT
 
         async function getData() {
@@ -123,7 +122,7 @@ marie.irisAxes()
 	margin: { t: 0 } } );*/
 
 //trying to implement Plotly
-/*
+
     marie.getScript=async function(url){
         url=url||'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js'
         return new Promise(function(resolve, reject) {
@@ -148,8 +147,10 @@ marie.irisAxes()
 	   return div
     }
     
-    marie.plot();console.log("worked")
-    */
+    //marie.plot();console.log("worked")
+    
+    //USE (in console) to plot:
+    //document.body.appendChild(await marie.plot())
 
     } //close [if(marie.div)]
 }   //close [marie.ui=function(div)]
