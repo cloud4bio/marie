@@ -33,16 +33,33 @@ marie.ui=function(div){
 	marie.irisAxes=async function(){ // https://codelabs.developers.google.com/codelabs/tfjs-training-regression
    	 	let irises = await getData()
 
-   	 	var trace = {
+   	 	var trace_seposa = {
    	 		x : [],
    	 		y : [],
-   	 		correctSpecies : [],
+   	 		//correctSpecies : [],
    	 		mode : 'markers',
    	 		type : 'scatter',
-  			marker: { size: 4 }
+  			marker: { color: 'rgb(200, 50, 100)', size: 4 }
    	 	}
 
+		var trace_virginica = {
+   	 		x : [],
+   	 		y : [],
+   	 		//correctSpecies : [],
+   	 		mode : 'markers',
+   	 		type : 'scatter',
+  			marker: { color: 'rgb(100, 50, 200)', size: 4 }
+   	 	}
 
+   	 	var trace_versicolor = {
+   	 		x : [],
+   	 		y : [],
+   	 		//correctSpecies : [],
+   	 		mode : 'markers',
+   	 		type : 'scatter',
+  			marker: { color: 'rgb(20, 220, 30)', size: 4 }
+   	 	}
+   	 	
 		var layout = {
   			margin: {t:0},
   			title:{text:'Sepal Width vs Length'},
@@ -89,16 +106,18 @@ marie.ui=function(div){
 		//FOR A SINGLE GRAPH
 		irises.forEach((d,i) => {
 			console.log(d.temp)
-   	 		trace.x[i] = d.sepalLen
-   	 		trace.y[i] = d.sepalWid
-   	 		trace.correctSpecies[i] = d.correctSpecies
+   	 		trace_versicolor.x[i] = d.sepalLen
+   	 		trace_versicolor.y[i] = d.sepalWid
+   	 		//trace_seposa.correctSpecies[i] = d.correctSpecies
    	 	})
 
 		if(typeof(Plotly) == 'undefined'){
 			await marie.getScript('https://cdn.plot.ly/plotly-latest.min.js')
 		}
-		marie.irisAxes.chart = Plotly.plot( TESTER, [trace], layout )
+		marie.irisAxes.chart = Plotly.plot( TESTER, [trace_versicolor], layout )
+}
 
+marie.irisAxes(); 
 
 //Jonas's table code
 
@@ -119,7 +138,7 @@ marie.codeLabIris=async function(){
      })
 
      let species = Object.keys(sp)
-
+	 console.log(species)
     //debugger
 
 
@@ -141,7 +160,7 @@ marie.codeLabIris=async function(){
     return marie.codeLabIris.table
     //debugger
 }
-marie.codeLabIris()
+marie.codeLabIris() 
 		//FOR 16 MINI GRAPHS
 		/*var i, j
 		for (i = 0; i < x_axis.length; i++) {
@@ -158,10 +177,6 @@ marie.codeLabIris()
 		}*/
    	 	
 		
-		
-	}
-
-marie.irisAxes(); 
 //not sure why document.createElement('tester') isn't working programmatically
 //havingto create division statically through index.html
 /*TESTER = document.getElementById('tester');
