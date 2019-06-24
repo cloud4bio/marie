@@ -165,7 +165,6 @@ marie.ui=function(div){
 }
 
 marie.irisAxes('setosa'); 
-console.log(setosas)
 marie.irisAxes('virginica')
 marie.irisAxes("versicolor")
 
@@ -197,12 +196,19 @@ marie.codeLabIris=async function(){
         marie.codeLabIris.table.appendChild(tr)
         for(var j=0 ; j<n ; j++){
             let td = document.createElement('td')
+
+            let text = document.createTextNode("test")
+			let testPlot = document.createElement('Plotly')
+			//testPlot.innerHTML = marie.irisAxes('setosa'); 
             let div = document.createElement('div')
             div.i=i
             div.j=i
             div.id=`${i}_${j}`
             div.innerHTML=`div(${i},${j})`
             td.appendChild(div)
+            td.appendChild(text)
+            td.appendChild(testPlot)
+            //td.innerHTML = marie.irisAxes('setosa'); //how to insert plot into cell?
             tr.appendChild(td)
         }
     }
