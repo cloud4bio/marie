@@ -97,10 +97,53 @@ marie.ui=function(div){
 		if(typeof(Plotly) == 'undefined'){
 			await marie.getScript('https://cdn.plot.ly/plotly-latest.min.js')
 		}
-		Plotly.plot( TESTER, [trace], layout )
+		marie.irisAxes.chart = Plotly.plot( TESTER, [trace], layout )
 
+
+//Jonas's table code
+
+marie.codeLabIris=async function(){
+    console.log('iris lab assembling ...')
+    marie.codeLabIris.data=await (await fetch('https://episphere.github.io/ai/data/iris.json')).json()
+    let n = Object.entries(marie.codeLabIris.data[0]).length-1
+    marie.codeLabIris.table=document.createElement('table')
+    document.body.appendChild(marie.codeLabIris.table)
+    // wrangle the data
+    let sp={};marie.codeLabIris.data.forEach(d=>{
+        if(!sp[d.species]){sp[d.species]=0}
+        sp[d.species]+=1
+    })
+    // for each species generate a trace
+    Object.keys(sp).forEach(s=>{
+        //debugger
+     })
+
+     let species = Object.keys(sp)
+
+    //debugger
+
+
+    for(var i = 0; i<n ; i++){
+        let tr = document.createElement('tr')
+        marie.codeLabIris.table.appendChild(tr)
+        for(var j=0 ; j<n ; j++){
+            let td = document.createElement('td')
+            let div = document.createElement('div')
+            div.i=i
+            div.j=i
+            div.id=`${i}_${j}`
+            div.innerHTML=`div(${i},${j})`
+            td.appendChild(div)
+            tr.appendChild(td)
+        }
+    }
+
+    return marie.codeLabIris.table
+    //debugger
+}
+marie.codeLabIris()
 		//FOR 16 MINI GRAPHS
-		var i, j
+		/*var i, j
 		for (i = 0; i < x_axis.length; i++) {
 			for (j = 0; j < y_axis.length; j++) {
 				irises.forEach((d,z) => {
@@ -112,13 +155,13 @@ marie.ui=function(div){
    	 			})
    	 			Plotly.plot( TESTER, [trace], layout );
 			}
-		}
+		}*/
    	 	
 		
 		
 	}
 
-marie.irisAxes()
+marie.irisAxes(); 
 //not sure why document.createElement('tester') isn't working programmatically
 //havingto create division statically through index.html
 /*TESTER = document.getElementById('tester');
