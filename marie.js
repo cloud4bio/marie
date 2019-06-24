@@ -36,10 +36,12 @@ marie.ui=function(div){
    	 	var trace = {
    	 		x : [],
    	 		y : [],
+   	 		correctSpecies : [],
    	 		mode : 'markers',
    	 		type : 'scatter',
   			marker: { size: 4 }
    	 	}
+
 
 		var layout = {
   			margin: {t:0},
@@ -89,12 +91,16 @@ marie.ui=function(div){
 			console.log(d.temp)
    	 		trace.x[i] = d.sepalLen
    	 		trace.y[i] = d.sepalWid
+   	 		trace.correctSpecies[i] = d.correctSpecies
    	 	})
 
+		if(typeof(Plotly) == 'undefined'){
+			await marie.getScript('https://cdn.plot.ly/plotly-latest.min.js')
+		}
 		Plotly.plot( TESTER, [trace], layout )
 
 		//FOR 16 MINI GRAPHS
-		/*var i, j
+		var i, j
 		for (i = 0; i < x_axis.length; i++) {
 			for (j = 0; j < y_axis.length; j++) {
 				irises.forEach((d,z) => {
@@ -106,7 +112,7 @@ marie.ui=function(div){
    	 			})
    	 			Plotly.plot( TESTER, [trace], layout );
 			}
-		}*/
+		}
    	 	
 		
 		
@@ -146,9 +152,13 @@ marie.irisAxes()
 	   Plotly.plot(div,traces,layout)
 	   return div
     }
+
+    marie.plotIris=async function(){
+
+    }
     
     //marie.plot();console.log("worked")
-    
+
     //USE (in console) to plot:
     //document.body.appendChild(await marie.plot())
 
