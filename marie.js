@@ -59,7 +59,7 @@ marie.ui=function(div){
    	 			//correctSpecies : [],
    	 			mode : 'markers',
    	 			type : 'scatter',
-   	 			name: 'setosas',
+   	 			name: 'setosa',
   				marker: { color: 'rgb(200, 50, 100)', size: 4 }
    	 		}
 		}
@@ -70,7 +70,7 @@ marie.ui=function(div){
 				//correctSpecies : [],
 				mode : 'markers',
 				type : 'scatter',
-				name: 'versicolors',
+				name: 'versicolor',
 				marker: { color: 'rgb(20, 220, 30)', size: 4 }
 			}
 		}
@@ -81,7 +81,7 @@ marie.ui=function(div){
 				//correctSpecies : [],
 				mode : 'markers',
 				type : 'scatter',
-				name: 'virginicas',
+				name: 'virginica',
 				marker: { color: 'rgb(100, 50, 200)', size: 4 }
 			}
    	 	}
@@ -164,9 +164,9 @@ marie.ui=function(div){
 		marie.irisAxes.chart = Plotly.plot( TESTER, [trace], layout )
 }
 
-marie.irisAxes('setosa'); 
+/*marie.irisAxes('setosa'); 
 marie.irisAxes('virginica')
-marie.irisAxes("versicolor")
+marie.irisAxes("versicolor")*/
 
 //Jonas's table code
 
@@ -187,6 +187,10 @@ marie.codeLabIris=async function(){
      })
 
      let species = Object.keys(sp)
+	species.forEach(function(s){
+		marie.irisAxes(s);
+	})
+     
 	 //console.log(species)
     //debugger
 
@@ -198,8 +202,8 @@ marie.codeLabIris=async function(){
             let td = document.createElement('td')
 
             let text = document.createTextNode("test")
-			let testPlot = document.createElement('Plotly')
-			//testPlot.innerHTML = marie.irisAxes('setosa'); 
+			let testPlot = document.createElement('Plotly')	//how to insert plot into cell?
+			//testPlot = marie.irisAxes('setosa'); 
             let div = document.createElement('div')
             div.i=i
             div.j=i
@@ -208,7 +212,6 @@ marie.codeLabIris=async function(){
             td.appendChild(div)
             td.appendChild(text)
             td.appendChild(testPlot)
-            //td.innerHTML = marie.irisAxes('setosa'); //how to insert plot into cell?
             tr.appendChild(td)
         }
     }

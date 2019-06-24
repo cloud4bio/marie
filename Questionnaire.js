@@ -54,7 +54,7 @@ survey.ui=function(div){
             ... [other questions]
         ]*/
 
-        questionsObj = 
+        /*questionsObj = 
         [
             {QuestionID: 314, Question: 'Family History?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
             {QuestionID: 315, Question: 'Children?', Type: 'M', Options: ['Yes', 'No'], onDone: 'none', help: 'Clarifying Information'},
@@ -64,10 +64,11 @@ survey.ui=function(div){
         console.log(questionsJSON)
 
         var form = document.createElement("form");  
-        document.body.appendChild(form);
+        document.body.appendChild(form);*/
 
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
+        console.log(readText)
         retrievedObj = JSON.parse(readText);
 
         //without loop, just first question
@@ -82,7 +83,7 @@ survey.ui=function(div){
         
         //if multiple choice
         var type = retrievedObj[0].Type
-          if(type == 'M'){
+          if(type == 'select'){
              //console.log('m')
              options = retrievedObj[0].Options
             
@@ -90,7 +91,7 @@ survey.ui=function(div){
              document.body.appendChild(firstAnswerChoice);
 
              var firstBubble = document.createElement("input")
-             firstBubble.setAttribute("type", "radio")
+             firstBubble.setAttribute("type", "select")
              firstBubble.setAttribute("id", "firstY")
              document.body.appendChild(firstBubble) 
              console.log(document.getElementById("firstY"))
@@ -99,7 +100,7 @@ survey.ui=function(div){
              document.body.appendChild(secondAnswerChoice);
 
              var secondBubble = document.createElement("input")
-             secondBubble.setAttribute("type", "radio")     
+             secondBubble.setAttribute("type", "select")     
              secondBubble.setAttribute("id", "firstN")      
              document.body.appendChild(secondBubble) 
                              
@@ -109,7 +110,7 @@ survey.ui=function(div){
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
 
-            document.getElementById("firstY").onclick  
+           /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
             var clickMessage = document.createTextNode("Clicked yes")
@@ -121,7 +122,7 @@ survey.ui=function(div){
             {console.log("clicked no"); 
             var clickMessage = document.createTextNode("Clicked no")
                document.body.appendChild(clickMessage);
-            } 
+            } */
         
         //loop through all questions in JSON
         /*
