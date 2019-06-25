@@ -10,11 +10,9 @@ survey.ui = function(div) {
         //Header and text
         let h = `<h3>Risk Prediction Questionnaire</h3>`
         let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" targe = "_blank"> the GitHub Wiki</a>.</p>`
-        survey.div.innerHTML = h + more
+        h += more
+        survey.div.innerHTML = h
 
-        var resultButton = document.createElement('button')
-        resultButton.innerHTML = "Results"
-        document.body.appendChild(resultButton)
         /*Reading from JSON test
         myObj = {Age: 40, FamilyHistory: 'Y', PreviousDiagnosis: 'N', Children: 'Y', Mammogram: 'N'};
         myJSON = JSON.stringify(myObj);
@@ -49,7 +47,7 @@ survey.ui = function(div) {
         ]*/
 
         questionsObj = [{
-            "ID": 317,
+            "ID": 314,
             "Question": "Family History?",
             "Type": "radio",
             "Options": ["Yes", "No"],
@@ -70,7 +68,7 @@ survey.ui = function(div) {
             "onDone": "none",
             "help": "Clarifying Information"
         }, {
-            "ID": 314,
+            "ID": 317,
             "Question": "Weight?",
             "Type": "numeric",
             "onDone": "none",
@@ -97,7 +95,7 @@ survey.ui = function(div) {
             //console.log(newQuest)
         }
 
-        questionOrder = [314, 315, 316, 317]
+        questionOrder = [314, 315, 316, 317]            //can we just provide question order?
 
         //initialize dictionary to hold results of each question
         var resultDict = {}
@@ -126,8 +124,10 @@ survey.ui = function(div) {
 
             //if multiple choice
             var type = currItem.Type
-
+            console.log(type)
+            console.log(currID)
             //multiple choice question, one response allowed
+            //need to allow for more than two options
             if (type == 'radio') {
                 //console.log('m')
                 options = currItem.Options
@@ -161,7 +161,8 @@ survey.ui = function(div) {
                     console.log(resultDict)
                 }
 
-                //PROBLEM: response not begin associated with correct ID?
+                //PROBLEM: response not begin associated with correct ID
+                // always storing in HIGHEST ID (e.g. 317), overwriting what is there
             } 
             else if (type == 'numeric') {
                 //if input is of a numeric type
@@ -179,7 +180,21 @@ survey.ui = function(div) {
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
 
+
+            currID++            //PROBLEM: THIS ADDED A NEW ID (318) to the dictionary, put first question result there
             //gotoQuest(currItem.onDone)
+        }
+
+        var newDiv = document.createElement('div');
+        document.body.appendChild(newDiv);
+        var resultButton = document.createElement('button')
+        resultButton.setAttribute("id","done")
+        resultButton.innerHTML = "Results"
+        document.body.appendChild(resultButton)
+        document.getElementById("done").onclick = function() {
+                console.log(resultDict + "got it")
+                h += resultDict//.toString()
+                survey.div.innerHTML = h
         }
 
         /* document.getElementById("firstY").onclick  
