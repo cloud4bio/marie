@@ -9,29 +9,9 @@ survey.ui = function(div) {
 
         //Header and text
         let h = `<h3>Risk Prediction Questionnaire</h3>`
-        let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" targe = "_blank"> the GitHub Wiki</a>.</p>`
+        let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" target = "_blank"> the GitHub Wiki</a>.</p>`
         h += more
         survey.div.innerHTML = h
-
-        /*Reading from JSON test
-        myObj = {Age: 40, FamilyHistory: 'Y', PreviousDiagnosis: 'N', Children: 'Y', Mammogram: 'N'};
-        myJSON = JSON.stringify(myObj);
-        localStorage.setItem("testJSON", myJSON);   //tentatively saving JSON to local storage
-        console.log(myJSON)
-        // Retrieving data:
-        text = localStorage.getItem("testJSON");
-        obj = JSON.parse(text);
-        console.log(obj.Age)
-        var ageStr = 'Age: ' + obj.Age
-        var FamilyHistoryStr = 'Family History?: ' + obj.FamilyHistory
-        var PreviousDiagnosisStr = 'Previous Diagnosis?: ' + obj.PreviousDiagnosis
-        var ChildrenStr = 'Children?: ' + obj.Children
-        var MammogramStr = 'Completed Mammogram?: ' + obj.Mammogram
-        var finalStr = ageStr + `<p></p>` + FamilyHistoryStr + `<p></p>` + PreviousDiagnosisStr 
-        + `<p></p>` + ChildrenStr + `<p></p>` + MammogramStr
-        console.log(finalStr)
-        h += finalStr
-        survey.div.innerHTML=h*/
 
         /*Sample JSON File Format
         [
@@ -46,26 +26,27 @@ survey.ui = function(div) {
             ... [other questions]
         ]*/
 
+//ACTUAL QUESTIONS (likely): https://rdrr.io/bioc/iCARE/man/bc_data.html
+
         questionsObj = [{
             "ID": 314,
             "Question": "Family History?",
             "Type": "radio",
             "Options": ["Yes", "No"],
-            "onDone": "none",
+            "onDone": "315",
             "help": "Clarifying Information"
         }, {
             "ID": 315,
             "Question": "Children?",
             "Type": "radio",
             "Options": ["Yes", "No"],
-            "onDone": "none",
+            "onDone": "316",
             "help": "Clarifying Information"
         }, {
             "ID": 316,
             "Question": "Smoker?",
-            "Type": "radio",
-            "Options": ["Yes", "No"],
-            "onDone": "none",
+            "Type": "check",
+            "onDone": "317",
             "help": "Clarifying Information"
         }, {
             "ID": 317,
@@ -105,12 +86,15 @@ survey.ui = function(div) {
             resultDict[id] = null;
         }
 
+        currID = 314 // start ID (first question)
         var i
         for (i = 0; i < questionOrder.length; i++) {
+             currItem = gotoQuest(currID)[0]
             //access questions with current ID
-            var currID = questionOrder[i]
-            console.log(currID)
-            var currItem = gotoQuest(currID)[0]
+            //var currID = questionOrder[i]
+            //console.log(currID)
+            //currID = questionOrder[0]
+            //var currItem = gotoQuest(currID)[0]
             console.log(currItem)
             //obtain the question itself
             currQuestion = currItem.Question
@@ -125,7 +109,7 @@ survey.ui = function(div) {
             //if multiple choice
             var type = currItem.Type
             console.log(type)
-            console.log(currID)
+            //console.log(currID)
             //multiple choice question, one response allowed
             //need to allow for more than two options
             if (type == 'radio') {
@@ -151,7 +135,7 @@ survey.ui = function(div) {
                 document.body.appendChild(secondBubble)
 
                 document.getElementById("Y").onclick = function() {
-                    console.log(currID);
+                    //console.log(currID);
                     resultDict[currID] = options[0];
                     console.log(resultDict)
                 }
@@ -164,6 +148,7 @@ survey.ui = function(div) {
                 //PROBLEM: response not begin associated with correct ID
                 // always storing in HIGHEST ID (e.g. 317), overwriting what is there
             } 
+            
             else if (type == 'numeric') {
                 //if input is of a numeric type
                 let inputBox = document.createElement("input")
@@ -176,13 +161,22 @@ survey.ui = function(div) {
                 }
             }
 
+            else if (type == 'check') {
+                //if input is of a numeric type
+                let checkBox = document.createElement("input")
+                checkBox.setAttribute("type", "checkbox")
+                checkBox.setAttribute("id", "checkInput")
+                document.body.appendChild(checkBox)
+                checkBox.onclick=function(){
+                        let boolean = document.getElementById('checkInput').checked
+                        resultDict[currID] = boolean; console.log(resultDict)
+                }
+            }
+
             var guidance = currItem.help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
-
-
-            currID++            //PROBLEM: THIS ADDED A NEW ID (318) to the dictionary, put first question result there
-            //gotoQuest(currItem.onDone)
+            currID = currItem.onDone
         }
 
         var newDiv = document.createElement('div');
