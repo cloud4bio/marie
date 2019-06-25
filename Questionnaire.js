@@ -17,29 +17,6 @@ survey.ui=function(div){
         var resultButton = document.createElement('button')
         resultButton.innerHTML = "Results"
         document.body.appendChild(resultButton)
-        /*Reading from JSON test
-        myObj = {Age: 40, FamilyHistory: 'Y', PreviousDiagnosis: 'N', Children: 'Y', Mammogram: 'N'};
-        myJSON = JSON.stringify(myObj);
-        localStorage.setItem("testJSON", myJSON);   //tentatively saving JSON to local storage
-        console.log(myJSON)
-
-        // Retrieving data:
-        text = localStorage.getItem("testJSON");
-        obj = JSON.parse(text);
-        console.log(obj.Age)
-
-        var ageStr = 'Age: ' + obj.Age
-        var FamilyHistoryStr = 'Family History?: ' + obj.FamilyHistory
-        var PreviousDiagnosisStr = 'Previous Diagnosis?: ' + obj.PreviousDiagnosis
-        var ChildrenStr = 'Children?: ' + obj.Children
-        var MammogramStr = 'Completed Mammogram?: ' + obj.Mammogram
-
-        var finalStr = ageStr + `<p></p>` + FamilyHistoryStr + `<p></p>` + PreviousDiagnosisStr 
-        + `<p></p>` + ChildrenStr + `<p></p>` + MammogramStr
-
-        console.log(finalStr)
-        h += finalStr
-        survey.div.innerHTML=h*/
 
         /*Sample JSON File Format
         [
@@ -54,37 +31,15 @@ survey.ui=function(div){
             ... [other questions]
         ]*/
 
-        questionsObj = 
-        [
-           {
-              "ID": 314,
-              "Question": "Family History?",
-              "Type": "radio",
-              "Options": [
-                 "Yes",
-                 "No"
-              ],
-              "onDone": "315",
-              "help": "Clarifying Information"
-           },
-           {
-              "ID": 315,
-              "Question": "Children?",
-              "Type": "radio",
-              "Options": [
-                 "Yes",
-                 "No"
-              ],
-              "onDone": "none",
-              "help": "Clarifying Information"
-           }
-        ]
-        questionsJSON = JSON.stringify(questionsObj);
-        localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
-        console.log(questionsJSON)
-
-        var form = document.createElement("form");  
-        document.body.appendChild(form);
+        async function readByIDs(){
+            //q = readJSON()
+            q = await (await fetch('https://cloud4bio.github.io/marie/questions.json')).json()
+            qq={}
+            q.forEach(qi=>{qq[qi['@id']]=qi})
+            console.log(qq)
+            return qq
+        }
+        qq = readByIDs()
 
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
