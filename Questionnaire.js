@@ -37,22 +37,30 @@ survey.ui=function(div){
             qq={}
             q.forEach(qi=>{qq[qi['@id']]=qi})
             console.log(qq)
+            console.log(qq[314])
             return qq
         }
-        qq = readByIDs()
 
-        // Retrieving data:
-        readText = localStorage.getItem("questionsJSON");   //this would probably be a link
-        console.log(readText)
-        retrievedObj = JSON.parse(readText);
+        var questionsObj = readByIDs()
+
+        async function getQuest(givenID){
+            testQuest = questionsObj[givenID]
+            console.log(testQuest)
+        }
+        
+        currQuestion = getQuest[314]
+   
+
+        /*accessing question by looking inside for ID
 
         function gotoQuest(givenID){
-            let newQuest = retrievedObj.filter(quest => quest.ID == givenID)
+            let newQuest = questionsObj.filter(quest => quest.ID == givenID)
+            let accessID = questionsObj[givenID]
             console.log(newQuest)
         }
+
+        gotoQuest(314)*/
         //without loop, just first question
-        currQuestion = retrievedObj[0].Question
-        console.log(currQuestion)
 
         var newDiv = document.createElement('div');
         document.body.appendChild(newDiv);
@@ -61,10 +69,10 @@ survey.ui=function(div){
         document.body.appendChild(quest);
         
         //if multiple choice
-        var type = retrievedObj[0].Type
+        var type = currQuestion.Type
           if(type == 'radio'){
              //console.log('m')
-             options = retrievedObj[0].Options
+             options = questionsObj[0].Options
             
              var firstAnswerChoice = document.createTextNode(options[0])
              document.body.appendChild(firstAnswerChoice);
@@ -85,11 +93,11 @@ survey.ui=function(div){
                              
           }
 
-            var guidance = retrievedObj[0].help
+            var guidance = questionsObj[0].help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
 
-            gotoQuest(retrievedObj[0].onDone)
+            gotoQuest(questionsObj[0].onDone)
            /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
