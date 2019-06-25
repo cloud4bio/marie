@@ -1,19 +1,17 @@
 console.log('questionnaire loadeds...')
 
+survey = {}
 
-survey={}
+survey.ui = function(div) {
+    survey.div = div || document.getElementById('workSpace')
 
-
-survey.ui=function(div){ 
-    survey.div=div||document.getElementById('workSpace')
-
-    if(survey.div){
+    if (survey.div) {
 
         //Header and text
         let h = `<h3>Risk Prediction Questionnaire</h3>`
         let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" targe = "_blank"> the GitHub Wiki</a>.</p>`
-        survey.div.innerHTML=h+more
-        
+        survey.div.innerHTML = h + more
+
         var resultButton = document.createElement('button')
         resultButton.innerHTML = "Results"
         document.body.appendChild(resultButton)
@@ -50,56 +48,72 @@ survey.ui=function(div){
             ... [other questions]
         ]*/
 
-        questionsObj = 
-        [
-           {
-              "ID": 314,
-              "Question": "Family History?",
-              "Type": "radio",
-              "Options": [
-                 "Yes",
-                 "No"
-              ],
-              "onDone": "315",
-              "help": "Clarifying Information"
-           },
-           {
-              "ID": 315,
-              "Question": "Children?",
-              "Type": "radio",
-              "Options": [
-                 "Yes",
-                 "No"
-              ],
-              "onDone": "none",
-              "help": "Clarifying Information"
-           }
+        questionsObj = [{
+            "ID": 317,
+            "Question": "Family History?",
+            "Type": "radio",
+            "Options": ["Yes", "No"],
+            "onDone": "none",
+            "help": "Clarifying Information"
+        }, {
+            "ID": 315,
+            "Question": "Children?",
+            "Type": "radio",
+            "Options": ["Yes", "No"],
+            "onDone": "none",
+            "help": "Clarifying Information"
+        }, {
+            "ID": 316,
+            "Question": "Smoker?",
+            "Type": "radio",
+            "Options": ["Yes", "No"],
+            "onDone": "none",
+            "help": "Clarifying Information"
+        }, {
+            "ID": 314,
+            "Question": "Weight?",
+            "Type": "numeric",
+            "onDone": "none",
+            "help": "Clarifying Information"
+        }
         ]
         questionsJSON = JSON.stringify(questionsObj);
-        localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
+        localStorage.setItem("questionsJSON", questionsJSON);
+        //tentatively saving JSON to local storage
         console.log(questionsJSON)
 
-        var form = document.createElement("form");  
+        var form = document.createElement("form");
         document.body.appendChild(form);
 
         // Retrieving data:
-        readText = localStorage.getItem("questionsJSON");   //this would probably be a link
+        readText = localStorage.getItem("questionsJSON");
+        //this would probably be a link
         //console.log(readText)
         retrievedObj = JSON.parse(readText);
 
-        function gotoQuest(givenID){
-            let newQuest = retrievedObj.filter(quest => quest.ID == givenID)
+        function gotoQuest(givenID) {
+            let newQuest = retrievedObj.filter(quest=>quest.ID == givenID)
             return newQuest
             //console.log(newQuest)
         }
 
-        questionOrder = [314,315]
+        questionOrder = [314, 315, 316, 317]
+
+        //initialize dictionary to hold results of each question
+        var resultDict = {}
+        var count
+        for (count = 0; count < questionOrder.length; count++) {
+            id = questionOrder[count]
+            resultDict[id] = null;
+        }
 
         var i
-        for(i = 0; i < questionOrder.length; i++){
+        for (i = 0; i < questionOrder.length; i++) {
             //access questions with current ID
             var currID = questionOrder[i]
+            console.log(currID)
             var currItem = gotoQuest(currID)[0]
+            console.log(currItem)
             //obtain the question itself
             currQuestion = currItem.Question
             console.log(currQuestion)
@@ -112,39 +126,63 @@ survey.ui=function(div){
 
             //if multiple choice
             var type = currItem.Type
-              if(type == 'radio'){
-                 //console.log('m')
-                 options = currItem.Options
 
-                 var firstAnswerChoice = document.createTextNode(options[0])
-                 document.body.appendChild(firstAnswerChoice);
+            //multiple choice question, one response allowed
+            if (type == 'radio') {
+                //console.log('m')
+                options = currItem.Options
 
-                 var firstBubble = document.createElement("input")
-                 firstBubble.setAttribute("type", "radio")
-                 firstBubble.setAttribute("id", "firstY")
-                 document.body.appendChild(firstBubble) 
-                 console.log(document.getElementById("firstY"))
+                let firstAnswerChoice = document.createTextNode(options[0])
+                document.body.appendChild(firstAnswerChoice);
 
-                 var secondAnswerChoice = document.createTextNode(options[1])
-                 document.body.appendChild(secondAnswerChoice);
+                let firstBubble = document.createElement("input")
+                firstBubble.setAttribute("type", "radio")
+                firstBubble.setAttribute("id", "Y")
+                //PROBLEM: same ID for multiple questions' bubbles
+                document.body.appendChild(firstBubble)
+                //console.log(document.getElementById("Y"))
 
-                 var secondBubble = document.createElement("input")
-                 secondBubble.setAttribute("type", "radio")     
-                 secondBubble.setAttribute("id", "firstN")      
-                 document.body.appendChild(secondBubble) 
+                let secondAnswerChoice = document.createTextNode(options[1])
+                document.body.appendChild(secondAnswerChoice);
 
-              }
+                let secondBubble = document.createElement("input")
+                secondBubble.setAttribute("type", "radio")
+                secondBubble.setAttribute("id", "N")
+                document.body.appendChild(secondBubble)
 
-                var guidance = currItem.help
-                var helpText = document.createTextNode(guidance)
-                document.body.appendChild(helpText)
+                document.getElementById("Y").onclick = function() {
+                    console.log(currID);
+                    resultDict[currID] = options[0];
+                    console.log(resultDict)
+                }
 
-                gotoQuest(currItem.onDone)
+                document.getElementById("N").onclick = function() {
+                    resultDict[currID] = options[1];
+                    console.log(resultDict)
+                }
+
+                //PROBLEM: response not begin associated with correct ID?
+            } 
+            else if (type == 'numeric') {
+                //if input is of a numeric type
+                let inputBox = document.createElement("input")
+                inputBox.setAttribute("type", "number")
+                inputBox.setAttribute("id", "userInput")
+                document.body.appendChild(inputBox)
+                inputBox.onkeyup=function(){
+                        let numReply = document.getElementById('userInput').value
+                        resultDict[currID] = numReply; console.log(resultDict)
+                }
+            }
+
+            var guidance = currItem.help
+            var helpText = document.createTextNode(guidance)
+            document.body.appendChild(helpText)
+
+            //gotoQuest(currItem.onDone)
         }
-        
 
-        
-           /* document.getElementById("firstY").onclick  
+        /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
             var clickMessage = document.createTextNode("Clicked yes")
@@ -156,7 +194,7 @@ survey.ui=function(div){
             var clickMessage = document.createTextNode("Clicked no")
                document.body.appendChild(clickMessage);
             } */
-        
+
         //loop through all questions in JSON
         /*
         var i
@@ -186,18 +224,19 @@ survey.ui=function(div){
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
         }   */
-    
+
         //var questionDiv = document.createElement('div');
         //document.body.appendChild(questionDiv);
 
+    }
+    //close [if(survey.div)]
 
-    }   //close [if(survey.div)]
-
-} //close[survey.ui=function(div)]
+}
+//close[survey.ui=function(div)]
 
 //On page startup
-window.onload=function(){
-    if(document.getElementById('workSpace')){
-        survey.ui(document.getElementById('workSpace'))    
+window.onload = function() {
+    if (document.getElementById('workSpace')) {
+        survey.ui(document.getElementById('workSpace'))
     }
 }
