@@ -17,6 +17,25 @@ survey.ui=function(div){
         var resultButton = document.createElement('button')
         resultButton.innerHTML = "Results"
         document.body.appendChild(resultButton)
+        /*Reading from JSON test
+        myObj = {Age: 40, FamilyHistory: 'Y', PreviousDiagnosis: 'N', Children: 'Y', Mammogram: 'N'};
+        myJSON = JSON.stringify(myObj);
+        localStorage.setItem("testJSON", myJSON);   //tentatively saving JSON to local storage
+        console.log(myJSON)
+        // Retrieving data:
+        text = localStorage.getItem("testJSON");
+        obj = JSON.parse(text);
+        console.log(obj.Age)
+        var ageStr = 'Age: ' + obj.Age
+        var FamilyHistoryStr = 'Family History?: ' + obj.FamilyHistory
+        var PreviousDiagnosisStr = 'Previous Diagnosis?: ' + obj.PreviousDiagnosis
+        var ChildrenStr = 'Children?: ' + obj.Children
+        var MammogramStr = 'Completed Mammogram?: ' + obj.Mammogram
+        var finalStr = ageStr + `<p></p>` + FamilyHistoryStr + `<p></p>` + PreviousDiagnosisStr 
+        + `<p></p>` + ChildrenStr + `<p></p>` + MammogramStr
+        console.log(finalStr)
+        h += finalStr
+        survey.div.innerHTML=h*/
 
         /*Sample JSON File Format
         [
@@ -31,36 +50,50 @@ survey.ui=function(div){
             ... [other questions]
         ]*/
 
-        async function readByIDs(){
-            //q = readJSON()
-            q = await (await fetch('https://cloud4bio.github.io/marie/questions.json')).json()
-            qq={}
-            q.forEach(qi=>{qq[qi['@id']]=qi})
-            console.log(qq)
-            console.log(qq[314])
-            return qq
-        }
+        questionsObj = 
+        [
+           {
+              "ID": 314,
+              "Question": "Family History?",
+              "Type": "radio",
+              "Options": [
+                 "Yes",
+                 "No"
+              ],
+              "onDone": "315",
+              "help": "Clarifying Information"
+           },
+           {
+              "ID": 315,
+              "Question": "Children?",
+              "Type": "radio",
+              "Options": [
+                 "Yes",
+                 "No"
+              ],
+              "onDone": "none",
+              "help": "Clarifying Information"
+           }
+        ]
+        questionsJSON = JSON.stringify(questionsObj);
+        localStorage.setItem("questionsJSON", questionsJSON);   //tentatively saving JSON to local storage
+        console.log(questionsJSON)
 
-        var questionsObj = readByIDs()
+        var form = document.createElement("form");  
+        document.body.appendChild(form);
 
-        async function getQuest(givenID){
-            testQuest = questionsObj[givenID]
-            console.log(testQuest)
-        }
-        
-        currQuestion = getQuest[314]
-   
-
-        /*accessing question by looking inside for ID
+        // Retrieving data:
+        readText = localStorage.getItem("questionsJSON");   //this would probably be a link
+        console.log(readText)
+        retrievedObj = JSON.parse(readText);
 
         function gotoQuest(givenID){
-            let newQuest = questionsObj.filter(quest => quest.ID == givenID)
-            let accessID = questionsObj[givenID]
+            let newQuest = retrievedObj.filter(quest => quest.ID == givenID)
             console.log(newQuest)
         }
-
-        gotoQuest(314)*/
         //without loop, just first question
+        currQuestion = retrievedObj[0].Question
+        console.log(currQuestion)
 
         var newDiv = document.createElement('div');
         document.body.appendChild(newDiv);
@@ -69,10 +102,10 @@ survey.ui=function(div){
         document.body.appendChild(quest);
         
         //if multiple choice
-        var type = currQuestion.Type
+        var type = retrievedObj[0].Type
           if(type == 'radio'){
              //console.log('m')
-             options = questionsObj[0].Options
+             options = retrievedObj[0].Options
             
              var firstAnswerChoice = document.createTextNode(options[0])
              document.body.appendChild(firstAnswerChoice);
@@ -93,18 +126,17 @@ survey.ui=function(div){
                              
           }
 
-            var guidance = questionsObj[0].help
+            var guidance = retrievedObj[0].help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
 
-            gotoQuest(questionsObj[0].onDone)
+            gotoQuest(retrievedObj[0].onDone)
            /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
             var clickMessage = document.createTextNode("Clicked yes")
                document.body.appendChild(clickMessage);
             } 
-
             document.getElementById("firstN").onclick  
             = function()
             {console.log("clicked no"); 
@@ -118,13 +150,10 @@ survey.ui=function(div){
         for(i = 0; i < retrievedObj.length; i++){
             currQuestion = retrievedObj[i].Question
             console.log(currQuestion)
-
             var newDiv = document.createElement('div');
             document.body.appendChild(newDiv);
-
             var quest = document.createTextNode(currQuestion);
             document.body.appendChild(quest);
-
             //if multiple choice
             var type = retrievedObj[i].Type
             if(type == 'M'){
@@ -135,13 +164,11 @@ survey.ui=function(div){
                     //console.log(options[j])
                     var answerChoice = document.createTextNode(options[j])
                     document.body.appendChild(answerChoice);
-
                     var choice = document.createElement("input")
                     choice.setAttribute("type","radio")
                     document.body.appendChild(choice)                 
                 }
             }
-
             var guidance = retrievedObj[i].help
             var helpText = document.createTextNode(guidance)
             document.body.appendChild(helpText)
