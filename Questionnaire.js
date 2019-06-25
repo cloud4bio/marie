@@ -84,53 +84,66 @@ survey.ui=function(div){
 
         // Retrieving data:
         readText = localStorage.getItem("questionsJSON");   //this would probably be a link
-        console.log(readText)
+        //console.log(readText)
         retrievedObj = JSON.parse(readText);
 
         function gotoQuest(givenID){
             let newQuest = retrievedObj.filter(quest => quest.ID == givenID)
-            console.log(newQuest)
+            return newQuest
+            //console.log(newQuest)
         }
-        //without loop, just first question
-        currQuestion = retrievedObj[0].Question
-        console.log(currQuestion)
 
-        var newDiv = document.createElement('div');
-        document.body.appendChild(newDiv);
+        questionOrder = [314,315]
 
-        var quest = document.createTextNode(currQuestion);
-        document.body.appendChild(quest);
+        var i
+        for(i = 0; i < questionOrder.length; i++){
+            //access questions with current ID
+            var currID = questionOrder[i]
+            var currItem = gotoQuest(currID)[0]
+            //obtain the question itself
+            currQuestion = currItem.Question
+            console.log(currQuestion)
+
+            var newDiv = document.createElement('div');
+            document.body.appendChild(newDiv);
+
+            var quest = document.createTextNode(currQuestion);
+            document.body.appendChild(quest);
+
+            //if multiple choice
+            var type = currItem.Type
+              if(type == 'radio'){
+                 //console.log('m')
+                 options = currItem.Options
+
+                 var firstAnswerChoice = document.createTextNode(options[0])
+                 document.body.appendChild(firstAnswerChoice);
+
+                 var firstBubble = document.createElement("input")
+                 firstBubble.setAttribute("type", "radio")
+                 firstBubble.setAttribute("id", "firstY")
+                 document.body.appendChild(firstBubble) 
+                 console.log(document.getElementById("firstY"))
+
+                 var secondAnswerChoice = document.createTextNode(options[1])
+                 document.body.appendChild(secondAnswerChoice);
+
+                 var secondBubble = document.createElement("input")
+                 secondBubble.setAttribute("type", "radio")     
+                 secondBubble.setAttribute("id", "firstN")      
+                 document.body.appendChild(secondBubble) 
+
+              }
+
+                var guidance = currItem.help
+                var helpText = document.createTextNode(guidance)
+                document.body.appendChild(helpText)
+
+                gotoQuest(currItem.onDone)
+        }
         
-        //if multiple choice
-        var type = retrievedObj[0].Type
-          if(type == 'radio'){
-             //console.log('m')
-             options = retrievedObj[0].Options
-            
-             var firstAnswerChoice = document.createTextNode(options[0])
-             document.body.appendChild(firstAnswerChoice);
 
-             var firstBubble = document.createElement("input")
-             firstBubble.setAttribute("type", "radio")
-             firstBubble.setAttribute("id", "firstY")
-             document.body.appendChild(firstBubble) 
-             console.log(document.getElementById("firstY"))
-
-             var secondAnswerChoice = document.createTextNode(options[1])
-             document.body.appendChild(secondAnswerChoice);
-
-             var secondBubble = document.createElement("input")
-             secondBubble.setAttribute("type", "radio")     
-             secondBubble.setAttribute("id", "firstN")      
-             document.body.appendChild(secondBubble) 
-                             
-          }
-
-            var guidance = retrievedObj[0].help
-            var helpText = document.createTextNode(guidance)
-            document.body.appendChild(helpText)
-
-            gotoQuest(retrievedObj[0].onDone)
+        
            /* document.getElementById("firstY").onclick  
             = function()
             {console.log("clicked yes"); 
