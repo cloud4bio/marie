@@ -36,7 +36,6 @@ survey.ui = function(div) {
         startID = 314
         currItem = await getQuest(startID)
         finished = false
-        //WHILE LOOP HERE
 
         while(!finished){
             console.log('not finished')
@@ -88,11 +87,15 @@ survey.ui = function(div) {
 
                     let newBubble = document.createElement("input")
                     newBubble.setAttribute("type", "radio")
+                    newBubble.setAttribute("id",questID+i.toString())
+                    console.log("created ID", newBubble.id)
                     document.body.appendChild(newBubble)
 
                     newBubble.onclick = function(){
                         //moveOn(nextID);
                         console.log('clicked')
+                            resultDict[questID] = options[i]
+                            console.log(resultDict)
                         }
                     //store result somehow (not sure since multiple choice options are unlimited)
                 }
