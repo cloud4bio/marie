@@ -33,41 +33,53 @@ survey.ui = function(div) {
         var resultDict = {}
         
         //obtain starting question
-        startID = 316
+        startID = 314
         currItem = await getQuest(startID)
-        
+        finished = false
         //WHILE LOOP HERE
-        //access attributes of question
-        var currQuestion = currItem.Question
-        var type = currItem.Type
-        var currID = currItem.ID
-        var guidance = currItem.help
-        var nextQuest = currItem.onDone
 
-        var newDiv = document.createElement('div');
-        document.body.appendChild(newDiv);
+        while(!finished){
+            console.log('not finished')
 
-        var quest = document.createTextNode(currQuestion);
-        document.body.appendChild(quest);
+            //access attributes of question
+            var currQuestion = currItem.Question
+            var type = currItem.Type
+            var currID = currItem.ID
+            var guidance = currItem.help
+            var nextID = currItem.onDone
 
-        console.log(type)
-        createQuest(type);
+            var newDiv = document.createElement('div');
+            document.body.appendChild(newDiv);
 
-        function createQuest(type){     //want to input ID too?
+            var quest = document.createTextNode(currQuestion);
+            document.body.appendChild(quest);
+
+            console.log(type)
+            createQuest(type, currID);
+            if(nextID == 'last'){
+                finished = true
+            }
+            else{
+                currItem = await getQuest(nextID)
+            }   
+        }
+        
+
+        function createQuest(type, questID){     //want to input ID too?
             switch(type){
                 case "radio":
-                    newRadio();
+                    newRadio(questID);
                     break
                 case "numeric":
-                    newNumeric();
+                    newNumeric(questID);
                     break
                 case "check":
-                    newCheck();
+                    newCheck(questID);
                     break
             }
         }
 
-       function newRadio(){
+       function newRadio(questID){
                 options = currItem.Options
                 
                 for(let i=0; i<options.length; i++){
@@ -78,32 +90,35 @@ survey.ui = function(div) {
                     newBubble.setAttribute("type", "radio")
                     document.body.appendChild(newBubble)
 
-                    newBubble.onclick = function(){moveOn(nextQuest);console.log('clicked')}
+                    newBubble.onclick = function(){
+                        //moveOn(nextID);
+                        console.log('clicked')
+                        }
                     //store result somehow (not sure since multiple choice options are unlimited)
                 }
        }
 
-      function newNumeric(){
+      function newNumeric(questID){
          let inputBox = document.createElement("input")
          inputBox.setAttribute("type", "number")
          inputBox.setAttribute("id", "userInput")
          document.body.appendChild(inputBox)
          inputBox.onkeyup=function(){
             let numReply = document.getElementById('userInput').value
-            resultDict[currID] = numReply; console.log(resultDict)
-            moveOn(nextQuest)
+            resultDict[questID] = numReply; console.log(resultDict)
+            //moveOn(nextID)
          }
       }
 
-      function newCheck(){
+      function newCheck(questID){
           let checkBox = document.createElement("input")
           checkBox.setAttribute("type", "checkbox")
           checkBox.setAttribute("id", "checkInput")
           document.body.appendChild(checkBox)
           checkBox.onclick=function(){
               let boolean = document.getElementById('checkInput').checked
-              resultDict[currID] = boolean; console.log(resultDict)
-              moveOn(nextQuest)
+              resultDict[questID] = boolean; console.log(resultDict)
+              //moveOn(nextID)
           }
       }
 

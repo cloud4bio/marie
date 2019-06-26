@@ -4,7 +4,7 @@
             "Question": "Family History?",
             "Type": "radio",
             "Options": ["Yes", "No"],
-            "onDone": "315",
+            "onDone": 315,
             "help": "Clarifying Information"
         }, 
         {
@@ -12,21 +12,21 @@
             "Question": "Children?",
             "Type": "radio",
             "Options": ["Yes", "No"],
-            "onDone": "316",
+            "onDone": 316,
             "help": "Clarifying Information"
         }, 
         {
             "ID": 316,
             "Question": "Smoker?",
             "Type": "check",
-            "onDone": "317",
+            "onDone": 317,
             "help": "Clarifying Information"
         }, 
         {
             "ID": 317,
             "Question": "Weight?",
             "Type": "numeric",
-            "onDone": "none",
+            "onDone": "last",
             "help": "Clarifying Information"
         }
 ]
