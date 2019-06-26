@@ -1,24 +1,32 @@
 [
-   {
-      "@id": 314,
-      "Question": "Family History?",
-      "Type": "select",
-      "Options": [
-         "Yes",
-         "No"
-      ],
-      "onDone": "none",
-      "help": "Clarifying Information"
-   },
-   {
-      "@id": 315,
-      "Question": "Children?",
-      "Type": "select",
-      "Options": [
-         "Yes",
-         "No"
-      ],
-      "onDone": "none",
-      "help": "Clarifying Information"
-   }
+      {
+            "ID": 314,
+            "Question": "Family History?",
+            "Type": "radio",
+            "Options": ["Yes", "No"],
+            "onDone": "315",
+            "help": "Clarifying Information"
+        }, 
+        {
+            "ID": 315,
+            "Question": "Children?",
+            "Type": "radio",
+            "Options": ["Yes", "No"],
+            "onDone": "316",
+            "help": "Clarifying Information"
+        }, 
+        {
+            "ID": 316,
+            "Question": "Smoker?",
+            "Type": "check",
+            "onDone": "317",
+            "help": "Clarifying Information"
+        }, 
+        {
+            "ID": 317,
+            "Question": "Weight?",
+            "Type": "numeric",
+            "onDone": "none",
+            "help": "Clarifying Information"
+        }
 ]
