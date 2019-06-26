@@ -54,7 +54,9 @@ survey.ui = function(div) {
             document.body.appendChild(quest);
 
             console.log(type)
+
             createQuest(type, currID);
+
             if(nextID == 'last'){
                 finished = true
             }
@@ -78,29 +80,37 @@ survey.ui = function(div) {
             }
         }
 
+        //create multiple choice question element
        function newRadio(questID){
+                action = false
                 options = currItem.Options
                 
                 for(let i=0; i<options.length; i++){
-                    let newAnswer = document.createTextNode(options[i])
+                    let newAnswer = document.createTextNode(options[i])     //just attach as attribute of button?
                     document.body.appendChild(newAnswer);
 
                     let newBubble = document.createElement("input")
                     newBubble.setAttribute("type", "radio")
+                    //newBubble.setAttribute("value", options[i])
+
+                    /*trying to create ID for a dynamically created multiple choice element
                     newBubble.setAttribute("id",questID+i.toString())
-                    console.log("created ID", newBubble.id)
+                    console.log("created ID", newBubble.id)*/
+
                     document.body.appendChild(newBubble)
 
                     newBubble.onclick = function(){
-                        //moveOn(nextID);
-                        console.log('clicked')
+                            console.log('clicked')
                             resultDict[questID] = options[i]
                             console.log(resultDict)
+                            action = true
+                            return action
                         }
                     //store result somehow (not sure since multiple choice options are unlimited)
                 }
        }
 
+     //create numeric question element
       function newNumeric(questID){
          let inputBox = document.createElement("input")
          inputBox.setAttribute("type", "number")
@@ -109,10 +119,12 @@ survey.ui = function(div) {
          inputBox.onkeyup=function(){
             let numReply = document.getElementById('userInput').value
             resultDict[questID] = numReply; console.log(resultDict)
-            //moveOn(nextID)
+            action = true
+            return action
          }
       }
 
+      //create boolean (checkbox) question element
       function newCheck(questID){
           let checkBox = document.createElement("input")
           checkBox.setAttribute("type", "checkbox")
@@ -121,13 +133,29 @@ survey.ui = function(div) {
           checkBox.onclick=function(){
               let boolean = document.getElementById('checkInput').checked
               resultDict[questID] = boolean; console.log(resultDict)
-              //moveOn(nextID)
+              action = true
+              return action
           }
       }
 
-      function moveOn(next){
-//
-      }
+        //show responses on screen
+        var newDiv = document.createElement('div');
+        document.body.appendChild(newDiv);
+        var resultButton = document.createElement('button')
+        resultButton.setAttribute("id","done")
+        resultButton.innerHTML = "Results"
+        document.body.appendChild(resultButton)
+        document.getElementById("done").onclick = function() {
+                console.log("results")
+                Object.keys(resultDict).forEach(async function(key) {
+                    //currQuest = await getQuest(key).Question; console.log("TEST" + await (getQuest(key)).Question)
+                    let response = "Question ID: " + key + ' Response: ' + resultDict[key]
+                    let newDiv = document.createElement('div');
+                    document.body.appendChild(newDiv);
+                    toShow = document.createTextNode(response)
+                    document.body.appendChild(toShow);
+                });   
+        }   //end on "results" click function
 
 })()
 
