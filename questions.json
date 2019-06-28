@@ -26,7 +26,7 @@
             "ID": 317,
             "Question": "Weight?",
             "Type": "numeric",
-            "onDone": "last",
+            "onDone": false,
             "help": "Clarifying Information"
         }
 ]

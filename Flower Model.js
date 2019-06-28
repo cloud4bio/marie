@@ -22,7 +22,7 @@ flowerUI.ui=function(div){
         flowerUI.div.innerHTML=h
 
         //FLOWER SORTING PROJECT
-
+(async function(){
         async function getData() {
           const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
           const irisFile = await irisOriginalFile.json()  
@@ -129,6 +129,7 @@ flowerUI.ui=function(div){
              epochs
           })
        }
+    })
     }
 }
 

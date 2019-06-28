@@ -57,7 +57,7 @@ survey.ui = function(div) {
 
             createQuest(type, currID);
 
-            if(nextID == 'last'){
+            if(nextID == false){
                 finished = true
             }
             else{
