@@ -9,7 +9,8 @@ tensorUI.ui=function(div){
         
         //Header and text
         let h = `<h3>TensorFlow.js Iris Classification</h3>`
-        tensorUI.div.innerHTML=h
+        let description = '<p>Please wait for the model to load.</p>'
+        tensorUI.div.innerHTML=h+description
 
         //FOLLOWING CODE FROM TUTORIAL:
         //https://www.youtube.com/watch?v=sLtXkU4QjxI&list=PLQY2H8rRoyvwLbzbnKJ59NkZvQAW9wLbx&index=20&t=0s
@@ -188,10 +189,10 @@ tensorUI.ui=function(div){
             //test on specific cases
             const input = tf.tensor2d([5.8, 2.7, 5.1, 1.9], [1,4]);
             const prediction = model.predict(input);
-            alert(prediction);  //show distribution of probabilities
+            alert("Probabilties for each flower: " + prediction);  //show distribution of probabilities
 
             const predictionWithArgMax = model.predict(input).argMax(-1).dataSync();
-            alert(predictionWithArgMax);    //show which label is more likely
+            alert("Most likely flower: " + predictionWithArgMax);    //show which label is more likely
 
             const xData = xTest.dataSync();
             const yTrue = yTest.argMax(-1).dataSync();
