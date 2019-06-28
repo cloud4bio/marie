@@ -145,7 +145,76 @@ tensorUI.ui=function(div){
             return [xTrain, yTrain, xTest, yTest];
         }
 
-        getIrisData(0.2);
+        async function trainModel(xTrain, yTrain, xTest, yTest){
+            const model = tf.sequential();
+            const learningRate = 0.01;
+            const numberOfEpochs = 40;
+            const optimizer = tf.train.adam(learningRate);
+
+            //one layer with 10 neurons
+            model.add(tf.layers.dense(
+                {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+                //sigmoid produces output between 0 and 1
+            
+            //second layer with 3 neurons
+            model.add(tf.layers.dense(
+                {units: 3, activation: 'softmax'}));    //3 units because classifying 3 types of flower
+                //softmax normalizes values so outputs all add up to 1
+
+            model.compile({
+                optimizer: optimizer,
+                loss: 'categoricalCrossentropy',
+                metrics: ['accuracy']});
+
+            //training the model
+            const history = await model.fit(xTrain, yTrain,
+                {epochs: numberOfEpochs, validationData: [xTest, yTest],
+                    callbacks: {
+                        onEpochEnd: async (epoch, logs) => {
+                            //watch the loss decrease :)
+                            console.log("Epoch: " + epoch + " Logs: " + logs.loss);
+                            await tf.nextFrame();
+                        },
+                    }
+                });
+            return model;
+        }
+
+
+        async function doIris(){
+            const [xTrain, yTrain, xTest, yTest] = getIrisData(0.2); //reserve 20% of data for testing
+            model = await trainModel(xTrain, yTrain, xTest, yTest);
+
+            //test on specific cases
+            const input = tf.tensor2d([5.8, 2.7, 5.1, 1.9], [1,4]);
+            const prediction = model.predict(input);
+            alert(prediction);  //show distribution of probabilities
+
+            const predictionWithArgMax = model.predict(input).argMax(-1).dataSync();
+            alert(predictionWithArgMax);    //show which label is more likely
+
+            const xData = xTest.dataSync();
+            const yTrue = yTest.argMax(-1).dataSync();
+
+            const predictions = await model.predict(xTest);
+            const yPred = predictions.argMax(-1).dataSync();
+
+            var correct = 0;
+            var wrong = 0;
+
+            for(var i=0; i<yTrue.length; i++){
+                if(yTrue[i] == yPred[i]){
+                    correct++;
+                } else{
+                    wrong++;
+                }
+            }
+            alert("Prediction error rate: " + (wrong / yTrue.length));
+            //good if error rate is low
+        }
+
+        doIris()
+
 /*
         async function getIris(){
              const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
