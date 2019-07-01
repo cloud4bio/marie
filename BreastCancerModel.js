@@ -65,6 +65,39 @@ riskUI.ui=function(div){
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]
             })
         }   //end of getCancerData function
+
+        //define function to convert data to tensors, used in getCancerData()
+        function convertToTensors(data, targets, testSplit){
+            const numExamples = data.length;
+            if(numExamples != targets.length){
+                throw new Error('data and split have different numbers of examples');
+            }
+
+            //may need to round depending on what testSplit ratio was given
+            const numTestExamples = Math.round(numExamples * testSplit);
+            //everything that isn't reserved as a testing example is used for training
+            const numTrainExamples = numExamples - numTestExamples;
+
+            const xDims = data[0].length;
+
+            //create 2D tensor to hold feature data
+            const xs = tf.tensor2d(data, [numExamples, xDims]);
+
+            //create a 1D tensor to hold labels, and convert number label from
+            //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
+            const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
+
+            //split data into training and test tests, using slice
+            //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
+            //elements of the array
+            //SHOULD THIS INVOLVE A RANDOM ALGORITHM?
+            const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
+            const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
+            const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
+            const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
+            return [xTrain, yTrain, xTest, yTest];
+        }   //end of convertToTensors function
+
     }   //end of if(riskUI.div)
 }   //end of riskUI.ui=function(div)
 
