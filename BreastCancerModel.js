@@ -125,6 +125,75 @@ riskUI.ui=function(div){
             return [xTrain, yTrain, xTest, yTest];
         }   //end of convertToTensors function
 
+    //train model, minimize loss function
+    async function trainModel(xTrain, yTrain, xTest, yTest){
+            const model = tf.sequential();
+            const learningRate = 0.01;      //edit
+            const numberOfEpochs = 40;      //edit
+            //Adam optimizer used for classification problems
+            const optimizer = tf.train.adam(learningRate);
+
+            //one layer with 10 neurons
+            model.add(tf.layers.dense(
+                {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+                //sigmoid produces output between 0 and 1
+            
+            //add more layers in between?
+
+
+            //final layer with 3 neurons
+            model.add(tf.layers.dense(
+                {units: 2, activation: 'softmax'}));    //2 units because classifying into 2 outcomes
+                //softmax normalizes values so outputs all add up to 1
+
+            model.compile({
+                optimizer: optimizer,
+                loss: 'categoricalCrossentropy',
+                metrics: ['accuracy']});
+
+            //training the model
+            const history = await model.fit(xTrain, yTrain,
+                {epochs: numberOfEpochs, validationData: [xTest, yTest],
+                    callbacks: {
+                        onEpochEnd: async (epoch, logs) => {
+                            //watch the loss decrease :)
+                            console.log("Epoch: " + epoch + " Logs: " + logs.loss);
+                            await tf.nextFrame();
+                        },
+                    }
+                });
+            return model;
+        }   //end of trainModel function
+
+
+        async function run(){
+            const [xTrain, yTrain, xTest, yTest] = getCancerData(0.2); //reserve 20% of data for testing
+            model = await trainModel(xTrain, yTrain, xTest, yTest);
+
+            //test on specific cases
+            const input = tf.tensor2d(/*A TEST CASE*/);
+            const prediction = model.predict(input);
+            const yourRisk = prediction[0]  //or at 1?
+            alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
+            
+            const averageRisk = SOME_CONSTANT;
+            //use baseline risk instead of average risk? 
+            //then not possible to be below baseline risk
+
+            if(yourRisk > averageRisk){
+                alert("Your risk is " + yourRisk - averageRisk + " above average.")
+            } else {
+                alert("Your risk is " + averageRisk - yourRisk + " below average.")
+            }
+
+            //how to test accuracy of model if outputting a probability?
+            
+            alert("Prediction error rate: " + (wrong / yTrue.length));
+            //good if error rate is low
+        }
+
+        run()
+
     }   //end of if(riskUI.div)
 }   //end of riskUI.ui=function(div)
 
