@@ -19,6 +19,33 @@ riskUI.ui=function(div){
         //need to convert to readable format,
         //each study subject in their own array object
 
+        /*
+        Input variables (many categorical) should be:
+        - family history, binary indicator (famhist)
+        - age at menarche (menarche_dec)
+        - number of child births (parity)
+        - age at first birth (birth_dec)
+        - age at menopause (agemeno_dec)
+        - height (height_dec)
+        - body mass index (bmi_dec)
+        - use of hormone replacement therapy (rd_menohrt)
+        - estrogen/progesterone combined therapy (rd2_everhrt_c)
+        - estrogeon only therapy (rd2_everhrt_e)
+        - postmenopausal and current HRT user (rd2_currhrt)
+        - alcohol in drinks per week (alcoholdweek_dec)
+        - ever smoker (ever_smoke)
+        - age of study entry (study.entry.age)
+        - age of study exit (study.entry.exit)
+        - disease status (observed.outcome)
+        - years after study entry until development of disease (time.of.onset)
+        - years subject is followed up on (observed.followup)
+        */
+
+        /*
+        Output should be distribution of probabilties
+        between future cancer development yes/no
+        (Make dependent on how many years ahead?)*/
+
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
         function getCancerData(testSplit){
             return tf.tidy(() => {
