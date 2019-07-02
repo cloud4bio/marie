@@ -167,16 +167,21 @@ tensorUI.ui=function(div){
                 loss: 'categoricalCrossentropy',
                 metrics: ['accuracy']});
 
+            const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
-                {epochs: numberOfEpochs, validationData: [xTest, yTest],
-                    callbacks: {
+                {
+                    epochs: numberOfEpochs, validationData: [xTest, yTest],
+                    callbacks: 
+                    tfvis.show.fitCallbacks(surface, ['loss', 'acc'])
+                    /*{
                         onEpochEnd: async (epoch, logs) => {
                             //watch the loss decrease :)
                             console.log("Epoch: " + epoch + " Logs: " + logs.loss);
                             await tf.nextFrame();
-                        },
-                    }
+                           
+                        }
+                    }*/
                 });
             return model;
         }
@@ -216,6 +221,7 @@ tensorUI.ui=function(div){
 
         doIris()
 
+        //tfvis.visor().surface({name: 'Test', tab: 'Input Data'});
 /*
         async function getIris(){
              const irisOriginalFile = await fetch('https://episphere.github.io/ai/data/iris.json');  
