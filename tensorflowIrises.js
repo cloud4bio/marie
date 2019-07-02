@@ -173,6 +173,10 @@ tensorUI.ui=function(div){
                 {
                     epochs: numberOfEpochs, validationData: [xTest, yTest],
                     callbacks: 
+                    //plot the loss and accuracy over batches
+                    //1 epoch = 1 forward+backwards pass through ALL training examples
+                    //i.e. if 1000 training examples and batch size = 250, 
+                    //will take 4 iterations to finish 1 epoch
                     tfvis.show.fitCallbacks(surface, ['loss', 'acc'])
                     /*{
                         onEpochEnd: async (epoch, logs) => {
