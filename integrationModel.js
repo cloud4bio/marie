@@ -26,11 +26,24 @@ statUI.ui=function(div){
         step = stepSize;
     }
     
+    //start and end could correspond to ages
+
+    initialize(0.5)
+    integrate(0,10)
     function integrate(start, end){
-        for(x = start; x < end; x += step){
-            let value = expression(i)
-            sum += value
-            document.write("x = " + i + ", f(x) = " + value + ", sum = " + sum)
+        for(let x = start; x < end; x += step){
+            let value = expression(x)
+            let area = value * step
+            sum += area
+            let str = "x = " + x + ", f(x) = " + value + ", sum = " + sum
+
+            let newLine = document.createTextNode(str);
+            document.body.appendChild(newLine);
+
+            let newDiv = document.createElement('div')
+            document.body.appendChild(newDiv)
+
+            //document.write("x = " + x + ", f(x) = " + value + ", sum = " + sum)
         }   //end loop
         return sum
     }   //end integrate() function
