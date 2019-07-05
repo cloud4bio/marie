@@ -33,7 +33,7 @@ survey.ui = function(div) {
         var resultDict = {}
         
         //obtain starting question
-        startID = 314
+        startID = 1
         currItem = await getQuest(startID)
         finished = false
 
