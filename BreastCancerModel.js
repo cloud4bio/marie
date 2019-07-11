@@ -30,6 +30,13 @@ riskUI.ui=function(div){
             url=url||'http://localhost:8000/marie/miniData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
+
+            //remove quotations from headers (temporarily removed them manually)
+            for(count = 0; count < hh.length; count++){
+                str = hh[count]
+                str.replace(/['"]+/g, '')
+            }
+
             return rr.slice(1).map((r,i)=>{
                 let y = {}
                 r.forEach((v,j)=>{ 
@@ -71,8 +78,10 @@ riskUI.ui=function(div){
 
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
         async function getCancerData(testSplit){
-            cancer_data = await csv2json()
+            original_cancer_data = await csv2json()
 
+            //shuffle data
+            cancer_data = shuffle(original_cancer_data)
 
             //can remove some variables if they are unnecessary for training
            /* cancer_data = original_cancer_data.map(subj => ({
@@ -111,9 +120,33 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(const example of cancer_data){
                     console.log(example)
-                    const target = example.observed_outcome;    //why is this undefined?
-                    console.log(target)
-                    const data = example.slice(0,example.length-1); //not dealing with array,slice is not a function
+                    const target = example.observed_outcome;
+                    console.log("observed outcome " + target)
+                    //const data = delete example.observed_outcome; 
+
+                    //array of data inputs
+                    const data = 
+                        [example.famhist, 
+                        example. menarche_dec,
+                        example.parity,
+                        example.birth_dec,
+                        example.agemeno_dec,
+                        example.height_dec,
+                        example.bmi_dec,
+                        example.rd_menohrt,
+                        example.rd2_everhrt_c,
+                        example.rd2_everhrt_e,
+                        example.rd2_currhrt,
+                        example.alcoholdweek_dec,
+                        example.ever_smoke,
+
+                        //THESE SHOULDN'T ALL BE INPUTS
+                        example.study_entry_age,
+                        example.study_exit_age,
+                        example.time_of_onset]    
+                        //study entry age doesn't tell us when the person actuall developed cancer
+
+                    console.log("inputs " + data)
                     dataByClass[target].push(data);
                     targetsByClass[target].push(target);
                 }
@@ -148,7 +181,7 @@ riskUI.ui=function(div){
         }   //end of getCancerData function
 
         //define function to convert data to tensors, used in getCancerData()
-        async function convertToTensors(data, targets, testSplit){
+        function convertToTensors(data, targets, testSplit){
             const numExamples = data.length;
             if(numExamples != targets.length){
                 throw new Error('data and split have different numbers of examples');
@@ -161,11 +194,8 @@ riskUI.ui=function(div){
 
             const xDims = data[0].length;
 
-             //shuffle data
-            shuffled_data = await shuffle(data)
-            
             //create 2D tensor to hold feature data
-            const xs = tf.tensor2d(shuffled_data, [numExamples, xDims]);
+            const xs = tf.tensor2d(data, [numExamples, xDims]);
 
             //create a 1D tensor to hold labels, and convert number label from
             //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
@@ -183,7 +213,7 @@ riskUI.ui=function(div){
         }   //end of convertToTensors function
 
     //randomly shuffle order of elements in array
-    async function shuffle(arr){
+    function shuffle(arr){
         for(i = arr.length-1; i >= 0; i--){
             index = Math.floor(Math.random() * i)   //pick random index
             //swap with last element not yet used
@@ -269,7 +299,7 @@ riskUI.ui=function(div){
 
             //how to test accuracy of model if outputting a probability?
             
-            alert("Prediction error rate: " + (wrong / yTrue.length));
+            //alert("Prediction error rate: " + (wrong / yTrue.length));
             //good if error rate is low
         }
 
