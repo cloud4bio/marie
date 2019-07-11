@@ -173,7 +173,6 @@ riskUI.ui=function(div){
             //elements of the array
             //SHOULD INVOLVE A RANDOM ALGORITHM
             //for example, could shuffle the array first: 
-            //https://www.w3resource.com/javascript-exercises/javascript-array-exercise-17.php
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
@@ -181,6 +180,18 @@ riskUI.ui=function(div){
             return [xTrain, yTrain, xTest, yTest];
         }   //end of convertToTensors function
 
+    //randomly shuffle order of elements in array
+    async function shuffle(arr){
+        for(i = arr.length-1; i >= 0; i--){
+            index = Math.floor(Math.random() * i)   //pick random index
+            //swap with last element not yet used
+            temp = arr[i];
+            arr[i] = arr[index];
+            arr[index] = temp;
+        }
+        return arr
+    }
+    
     //use to choose random data items to reserve for use in test set
     async function randomSelection(numToChoose,max){
         chosen = []
