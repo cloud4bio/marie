@@ -148,7 +148,7 @@ riskUI.ui=function(div){
         }   //end of getCancerData function
 
         //define function to convert data to tensors, used in getCancerData()
-        function convertToTensors(data, targets, testSplit){
+        async function convertToTensors(data, targets, testSplit){
             const numExamples = data.length;
             if(numExamples != targets.length){
                 throw new Error('data and split have different numbers of examples');
@@ -161,18 +161,20 @@ riskUI.ui=function(div){
 
             const xDims = data[0].length;
 
+             //shuffle data
+            shuffled_data = await shuffle(data)
+            
             //create 2D tensor to hold feature data
-            const xs = tf.tensor2d(data, [numExamples, xDims]);
+            const xs = tf.tensor2d(shuffled_data, [numExamples, xDims]);
 
             //create a 1D tensor to hold labels, and convert number label from
             //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
             const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
 
+
             //split data into training and test tests, using slice
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
-            //SHOULD INVOLVE A RANDOM ALGORITHM
-            //for example, could shuffle the array first: 
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
@@ -191,7 +193,7 @@ riskUI.ui=function(div){
         }
         return arr
     }
-    
+
     //use to choose random data items to reserve for use in test set
     async function randomSelection(numToChoose,max){
         chosen = []
