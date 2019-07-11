@@ -36,12 +36,10 @@ statUI.ui=function(div){
             let area = value * step
             sum += area
             let str = "x = " + x + ", f(x) = " + value + ", sum = " + sum
-
-            let newLine = document.createTextNode(str);
-            document.body.appendChild(newLine);
-
             let newDiv = document.createElement('div')
             document.body.appendChild(newDiv)
+            let newLine = document.createTextNode(str);
+            document.body.appendChild(newLine);
 
             //document.write("x = " + x + ", f(x) = " + value + ", sum = " + sum)
         }   //end loop

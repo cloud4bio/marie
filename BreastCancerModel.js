@@ -15,10 +15,31 @@ riskUI.ui=function(div){
         const outcomes = ['developed_cancer','no_cancer']
         const num_outcomes = outcomes.length
         
-        const cancer_data = [] //ACCESS DATA FILE
-        //need to convert to readable format,
-        //each study subject in their own array object
+        //miniData.csv file contains the first 250 rows 
 
+       // const cancer_data = [] 
+
+
+         /*async function getData() {
+          const cancer_data = await fetch('http://localhost:8000/marie/miniData.csv')
+         }*/
+
+        csv2json=async function(url){
+            url=url||'http://localhost:8000/marie/miniData.csv'
+            const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
+            const hh = rr[0] // headers
+            return rr.slice(1).map((r,i)=>{
+                let y = {}
+                r.forEach((v,j)=>{ 
+                    if(j!=0){   //skip the row number (for proper alignment of headers)
+                        y[hh[j-1]]=v
+                    }
+                })  //end for each
+                return y
+            })
+        }
+
+       
         /*
         Input variables (many categorical) should be:
         - family history, binary indicator (famhist)
