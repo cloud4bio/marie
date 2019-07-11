@@ -24,6 +24,8 @@ riskUI.ui=function(div){
           const cancer_data = await fetch('http://localhost:8000/marie/miniData.csv')
          }*/
 
+    
+    //make sure that no header labels have periods in them, only underscores
         csv2json=async function(url){
             url=url||'http://localhost:8000/marie/miniData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
@@ -56,7 +58,7 @@ riskUI.ui=function(div){
         - alcohol in drinks per week (alcoholdweek_dec)
         - ever smoker (ever_smoke)
         - age of study entry (study.entry.age)
-        - age of study exit (study.entry.exit)
+        - age of study exit (study.exit.age)
         - disease status (observed.outcome)
         - years after study entry until development of disease (time.of.onset)
         - years subject is followed up on (observed.followup)
@@ -68,7 +70,36 @@ riskUI.ui=function(div){
         (Make dependent on how many years ahead?)*/
 
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
-        function getCancerData(testSplit){
+        async function getCancerData(testSplit){
+            cancer_data = await csv2json()
+
+
+            //can remove some variables if they are unnecessary for training
+           /* cancer_data = original_cancer_data.map(subj => ({
+                id: subj.id,
+                famhist: subj.famhist,
+                menarche_dec: subj.menarche_dec,
+                parity: subj.parity,
+                birth_dec: subj.birth_dec,
+                agemeno_dec: subj.agemeno_dec,
+                height_dec: subj.height_dec,
+                bmi_dec: subj.bmi_dec,
+                rd_menohrt: subj.rd_menohrt,
+                rd2_everhrt_c: subj.rd2_everhrt_c,
+                rd2_everhrt_e: subj.rd2_everhrt_e,
+                rd2_currhrt: subj.rd2_currhrt,
+                alcoholdweek_dec: subj.alcoholdweek_dec,
+                ever_smoke: subj.ever_smoke,
+                //problem because of the periods
+                study_entry_age:subj.study_entry_age,
+                study_exit_age: subj.study_exit_age,
+                outcome: subj.observed_outcome,
+                time_of_onset: subj.time_of_onset
+                 }))*/
+            
+
+            console.log(cancer_data)
+
             return tf.tidy(() => {
                 const dataByClass = [];
                 const targetsByClass = [];
@@ -79,8 +110,10 @@ riskUI.ui=function(div){
 
                 //sort data by class (whether or not cancer developed)
                 for(const example of cancer_data){
-                    const target = example[example.length-1];
-                    const data = example.slice(0,example.length-1);
+                    console.log(example)
+                    const target = example.observed_outcome;    //why is this undefined?
+                    console.log(target)
+                    const data = example.slice(0,example.length-1); //not dealing with array,slice is not a function
                     dataByClass[target].push(data);
                     targetsByClass[target].push(target);
                 }
@@ -138,13 +171,27 @@ riskUI.ui=function(div){
             //split data into training and test tests, using slice
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
-            //SHOULD THIS INVOLVE A RANDOM ALGORITHM?
+            //SHOULD INVOLVE A RANDOM ALGORITHM
+            //for example, could shuffle the array first: 
+            //https://www.w3resource.com/javascript-exercises/javascript-array-exercise-17.php
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
             const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
             return [xTrain, yTrain, xTest, yTest];
         }   //end of convertToTensors function
+
+    //use to choose random data items to reserve for use in test set
+    async function randomSelection(numToChoose,max){
+        chosen = []
+        while(chosen.length != numToChoose){
+            curr = Math.floor(Math.random() * Math.floor(max)) + 1  //return between 1 and last number
+            if(!chosen.includes(curr)){
+                chosen.push(curr)
+            }
+        }
+        return chosen;
+    }
 
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
@@ -188,7 +235,7 @@ riskUI.ui=function(div){
 
 
         async function run(){
-            const [xTrain, yTrain, xTest, yTest] = getCancerData(0.2); //reserve 20% of data for testing
+            const [xTrain, yTrain, xTest, yTest] = await getCancerData(0.2); //reserve 20% of data for testing
             model = await trainModel(xTrain, yTrain, xTest, yTest);
 
             //test on specific cases
