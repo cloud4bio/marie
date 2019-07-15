@@ -130,6 +130,7 @@ survey.ui = function(div) {
           checkBox.setAttribute("type", "checkbox")
           checkBox.setAttribute("id", "checkInput")
           document.body.appendChild(checkBox)
+          resultDict[questID] = false;
           checkBox.onclick=function(){
               let boolean = document.getElementById('checkInput').checked
               resultDict[questID] = boolean; console.log(resultDict)
