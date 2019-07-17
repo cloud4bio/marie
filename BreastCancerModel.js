@@ -138,7 +138,8 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(const example of cancer_data){
                     console.log(example)
-                    const target = example.observed_outcome;
+                    //whether the person developed cancer within 5 years of entering the study
+                    const target = example.cancerWithinInterval;    
                     console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
@@ -157,11 +158,7 @@ riskUI.ui=function(div){
                         example.rd2_currhrt,
                         example.alcoholdweek_dec,
                         example.ever_smoke,
-
-                        //THESE SHOULDN'T ALL BE INPUTS
-                        example.study_entry_age,
-                        example.study_exit_age,
-                        example.time_of_onset]    
+                        example.study_entry_age]    
                         //study entry age doesn't tell us when the person actuall developed cancer
 
                     console.log("inputs " + data)
