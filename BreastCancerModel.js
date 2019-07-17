@@ -138,7 +138,7 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(const example of cancer_data){
                     console.log(example)
-                    //whether the person developed cancer within 5 years of entering the study
+                    
                     const target = example.cancerWithinInterval;    
                     console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
@@ -297,7 +297,10 @@ riskUI.ui=function(div){
             model = await trainModel(xTrain, yTrain, xTest, yTest);
 
             //test on specific cases
-            const input = tf.tensor2d(/*A TEST CASE*/);
+            let testCase = 
+            [0,2,3,3,2,4,2,0,0,0, 0,2,1,55] 
+
+            const input = tf.tensor2d(testCase);
             const prediction = model.predict(input);
             const yourRisk = prediction[0]  //or at 1?
             alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
@@ -317,7 +320,6 @@ riskUI.ui=function(div){
             //alert("Prediction error rate: " + (wrong / yTrue.length));
             //good if error rate is low
         }
-
         run()
 
     }   //end of if(riskUI.div)
