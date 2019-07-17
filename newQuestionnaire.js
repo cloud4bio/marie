@@ -66,7 +66,7 @@ survey.ui = function(div) {
         }
         
 
-        function createQuest(type, questID){     //want to input ID too?
+        function createQuest(type, questID){     
             switch(type){
                 case "radio":
                     newRadio(questID);
@@ -83,7 +83,9 @@ survey.ui = function(div) {
         //create multiple choice question element
        function newRadio(questID){
                 action = false
+                console.log(currItem.Question)
                 options = currItem.Options
+                console.log(options)
                 
                 for(let i=0; i<options.length; i++){
                     let newAnswer = document.createTextNode(options[i])     //just attach as attribute of button?
@@ -101,6 +103,7 @@ survey.ui = function(div) {
 
                     newBubble.onclick = function(){
                             console.log('clicked')
+                            console.log(options[i])
                             resultDict[questID] = options[i]
                             console.log(resultDict)
                             action = true
