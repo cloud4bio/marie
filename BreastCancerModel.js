@@ -6,7 +6,6 @@ riskUI.ui=function(div){
     riskUI.div=div||document.getElementById('workSpace')
 
     if(riskUI.div){
-        
         //Header and text
         let h = `<h3>TensorFlow.js Breast Cancer Risk Prediction Model</h3>`
         let description = '<p>Please wait for the model to load.</p>'
@@ -101,30 +100,6 @@ riskUI.ui=function(div){
             //shuffle data
             cancer_data = shuffle(processedData)
 
-            //can remove some variables if they are unnecessary for training
-           /* cancer_data = original_cancer_data.map(subj => ({
-                id: subj.id,
-                famhist: subj.famhist,
-                menarche_dec: subj.menarche_dec,
-                parity: subj.parity,
-                birth_dec: subj.birth_dec,
-                agemeno_dec: subj.agemeno_dec,
-                height_dec: subj.height_dec,
-                bmi_dec: subj.bmi_dec,
-                rd_menohrt: subj.rd_menohrt,
-                rd2_everhrt_c: subj.rd2_everhrt_c,
-                rd2_everhrt_e: subj.rd2_everhrt_e,
-                rd2_currhrt: subj.rd2_currhrt,
-                alcoholdweek_dec: subj.alcoholdweek_dec,
-                ever_smoke: subj.ever_smoke,
-                //problem because of the periods
-                study_entry_age:subj.study_entry_age,
-                study_exit_age: subj.study_exit_age,
-                outcome: subj.observed_outcome,
-                time_of_onset: subj.time_of_onset
-                 }))*/
-            
-
             console.log(cancer_data)
 
             return tf.tidy(() => {
@@ -137,7 +112,7 @@ riskUI.ui=function(div){
 
                 //sort data by class (whether or not cancer developed)
                 for(const example of cancer_data){
-                    console.log(example)
+  
                     
                     const target = example.cancerWithinInterval;    
                     console.log("observed outcome " + target)
@@ -240,7 +215,8 @@ riskUI.ui=function(div){
     }
 
     //use to choose random data items to reserve for use in test set
-    async function randomSelection(numToChoose,max){
+    //instead: shuffling and then cutting into sections
+    /*async function randomSelection(numToChoose,max){
         chosen = []
         while(chosen.length != numToChoose){
             curr = Math.floor(Math.random() * Math.floor(max)) + 1  //return between 1 and last number
@@ -249,7 +225,7 @@ riskUI.ui=function(div){
             }
         }
         return chosen;
-    }
+    }*/
 
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
@@ -265,7 +241,6 @@ riskUI.ui=function(div){
                 //sigmoid produces output between 0 and 1
             
             //add more layers in between?
-
 
             //final layer with 3 neurons
             model.add(tf.layers.dense(
@@ -293,21 +268,19 @@ riskUI.ui=function(div){
 
 
         async function run(){
-            const [xTrain, yTrain, xTest, yTest] = await getCancerData(0.2); //reserve 20% of data for testing
+            const [xTrain, yTrain, xTest, yTest] = await getCancerData(0.2); 
+            //reserve 20% of data for testing
+            alert("here")   //doesn't get here?
             model = await trainModel(xTrain, yTrain, xTest, yTest);
-
             //test on specific cases
-            let testCase = 
-            [0,2,3,3,2,4,2,0,0,0, 0,2,1,55] 
+            let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
 
             const input = tf.tensor2d(testCase);
             const prediction = model.predict(input);
             const yourRisk = prediction[0]  //or at 1?
             alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
-            const averageRisk = SOME_CONSTANT;
-            //use baseline risk instead of average risk? 
-            //then not possible to be below baseline risk
+            const averageRisk = 912/50000;  //is this an accurate baseline metric?
 
             if(yourRisk > averageRisk){
                 alert("Your risk is " + yourRisk - averageRisk + " above average.")
