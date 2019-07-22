@@ -198,7 +198,7 @@ riskUI.ui=function(div){
             const numTrainExamples = numExamples - numTestExamples;
 
             console.log("data[0]: " + data[0])
-            const xDims = data[0].length;
+            const xDims = data[0].length;   //length of each object holding inputs
             console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
             const xs = tf.tensor2d(data, [numExamples, xDims]);
@@ -297,6 +297,8 @@ riskUI.ui=function(div){
             //reserve 20% of data for testing
             model = await trainModel(xTrain, yTrain, xTest, yTest);
             //test on specific cases
+
+            console.log("user's input: " + resultDict)
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
 
             const input = tf.tensor2d(testCase,[1,14]);

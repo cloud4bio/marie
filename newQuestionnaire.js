@@ -157,16 +157,21 @@ survey.ui = function(div) {
         survey.begin = false;
         document.getElementById("done").onclick = function() {
                 survey.begin = true;
-                console.log("Your Responses:")
+                let responsesDiv = document.createElement('div');
+                document.body.appendChild(responsesDiv);
+                let yourResponses = document.createTextNode("Your Responses:")
+                document.body.appendChild(yourResponses);
                 Object.keys(resultDict).forEach(async function(key) {
                     //currQuest = await getQuest(key).Question; console.log("TEST" + await (getQuest(key)).Question)
-                    let response = "Question ID: " + key + ' Response: ' + resultDict[key]
+                    let answering = await getQuest(key)
+                    let currAnswering = answering.Question
+                    let response = "Question ID: " + currAnswering + " "+ resultDict[key]
                     let newDiv = document.createElement('div');
                     document.body.appendChild(newDiv);
                     toShow = document.createTextNode(response)
                     document.body.appendChild(toShow);
                 });
-                riskUI.run()   
+                //riskUI.run()   
         }   //end on "results" click function
         window.survey = survey
         survey.resultDict = resultDict
