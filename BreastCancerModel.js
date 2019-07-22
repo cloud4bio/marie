@@ -123,6 +123,7 @@ riskUI.ui=function(div){
             }
             
             let balancedCohort = gotCancer.concat(narrowedNoCancer)
+            //console.log(balancedCohort)
             return balancedCohort
 
             //return processedData
@@ -271,7 +272,7 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 40;      //edit
+            const numberOfEpochs = 1;      //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
@@ -320,7 +321,6 @@ riskUI.ui=function(div){
 
             userInput = survey.resultDict
             console.log("user's input: " + userInput)
-            alert("error accessing result dictionairy")
 
             var inputArray = []
 
@@ -341,11 +341,14 @@ riskUI.ui=function(div){
 
 
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
-
-            const input = tf.tensor2d(testCase, [1,14]);
+            var input = tf.tensor2d(testCase, [1,14]);
+            input = input.reshape([1,14])
+            //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
-            console.log("wrong format?")         
+            console.log("wrong format?")
             const prediction = model.predict(input);
+            console.log(typeof prediction)
+            console.log(prediction)
             const yourRisk = prediction  
             console.log(yourRisk[0])    //or at 1?
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
