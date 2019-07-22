@@ -9,8 +9,7 @@ riskUI.ui=function(div){
     if(riskUI.div){
         //Header and text
         let h = `<h3>TensorFlow.js Breast Cancer Risk Prediction Model</h3>`
-        let description = '<p>Please wait for the model to load.</p>'
-        riskUI.div.innerHTML=h+description
+        riskUI.div.innerHTML=h
 
         /*var newDiv = document.createElement('div');
         document.body.appendChild(newDiv);
@@ -298,7 +297,28 @@ riskUI.ui=function(div){
             model = await trainModel(xTrain, yTrain, xTest, yTest);
             //test on specific cases
 
-            console.log("user's input: " + resultDict)
+            userInput = survey.resultDict
+            console.log("user's input: " + userInput)
+            alert("error accessing result dictionairy")
+
+            var inputArray = []
+
+            var missingValues = false;
+
+            //prepare input array from results dictionairy
+            /*
+            Object.keys(resultDict).forEach(async function(key) {
+                if(resultDict[key] == null){
+                    missingValues = true;
+                    alert("please answer all of the questions")
+                }
+                else{
+                    inputArray.push(resultDict[key])
+                    //ORDER has to be correct
+                }
+            })*/
+
+
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
 
             const input = tf.tensor2d(testCase,[1,14]);
@@ -306,7 +326,7 @@ riskUI.ui=function(div){
             console.log("wrong format?")         
             const prediction = model.predict(input);
             const yourRisk = prediction  //or at 1?
-            console.log(yourRisk)
+            console.log(yourRisk[0])
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
             const averageRisk = 912/50000;  //is this an accurate baseline metric?

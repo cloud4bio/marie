@@ -37,6 +37,7 @@ survey.ui = function(div) {
         startID = 1
         currItem = await getQuest(startID)
         finished = false
+        var keys = []
 
         while(!finished){
             console.log('not finished')
@@ -47,6 +48,8 @@ survey.ui = function(div) {
             var currID = currItem.ID
             var guidance = currItem.help
             var nextID = currItem.onDone
+
+            keys.push(currID)
 
             var newDiv = document.createElement('div');
             document.body.appendChild(newDiv);
@@ -88,6 +91,8 @@ survey.ui = function(div) {
                 options = currItem.Options
                 console.log(options)
                 
+                resultDict[questID] = null
+                
                 for(let i=0; i<options.length; i++){
                     let newAnswer = document.createTextNode(options[i])     //just attach as attribute of button?
                     document.body.appendChild(newAnswer);
@@ -114,7 +119,6 @@ survey.ui = function(div) {
                             action = true
                             return action
                         }
-                    //store result somehow (not sure since multiple choice options are unlimited)
                 }
        }
 
@@ -124,6 +128,7 @@ survey.ui = function(div) {
          inputBox.setAttribute("type", "number")
          inputBox.setAttribute("id", "userInput")
          document.body.appendChild(inputBox)
+         resultDict[questID] = null
          inputBox.onkeyup=function(){
             let numReply = document.getElementById('userInput').value
             resultDict[questID] = numReply; console.log(resultDict)
@@ -154,9 +159,8 @@ survey.ui = function(div) {
         resultButton.setAttribute("id","done")
         resultButton.innerHTML = "Results"
         document.body.appendChild(resultButton)
-        survey.begin = false;
         document.getElementById("done").onclick = function() {
-                survey.begin = true;
+               
                 let responsesDiv = document.createElement('div');
                 document.body.appendChild(responsesDiv);
                 let yourResponses = document.createTextNode("Your Responses:")
@@ -171,10 +175,10 @@ survey.ui = function(div) {
                     toShow = document.createTextNode(response)
                     document.body.appendChild(toShow);
                 });
-                //riskUI.run()   
+                alert("Please wait for the model to train.")
+                riskUI.run()   
         }   //end on "results" click function
         window.survey = survey
-        survey.resultDict = resultDict
 })()
 
 }
