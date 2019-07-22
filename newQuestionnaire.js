@@ -94,6 +94,8 @@ survey.ui = function(div) {
 
                     let newBubble = document.createElement("input")
                     newBubble.setAttribute("type", "radio")
+                    newBubble.className = currItem.ID;
+
                     //newBubble.setAttribute("value", options[i])
 
                     /*trying to create ID for a dynamically created multiple choice element
@@ -102,7 +104,9 @@ survey.ui = function(div) {
 
                     document.body.appendChild(newBubble)
 
-                    newBubble.onclick = function(){
+                    newBubble.onclick = async function(){
+                            associatedQuest = await getQuest(newBubble.className)
+                            options = associatedQuest.Options
                             console.log('clicked')
                             console.log(options[i])
                             resultDict[questID] = options[i]
