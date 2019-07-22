@@ -112,8 +112,6 @@ survey.ui = function(div) {
                             resultDict[questID] = options[i]
                             console.log(resultDict)
                             action = true
-                            survey.action = action
-                            survey.resultDict = resultDict
                             return action
                         }
                     //store result somehow (not sure since multiple choice options are unlimited)
@@ -156,8 +154,10 @@ survey.ui = function(div) {
         resultButton.setAttribute("id","done")
         resultButton.innerHTML = "Results"
         document.body.appendChild(resultButton)
+        survey.begin = false;
         document.getElementById("done").onclick = function() {
-                console.log("results")
+                survey.begin = true;
+                console.log("Your Responses:")
                 Object.keys(resultDict).forEach(async function(key) {
                     //currQuest = await getQuest(key).Question; console.log("TEST" + await (getQuest(key)).Question)
                     let response = "Question ID: " + key + ' Response: ' + resultDict[key]
@@ -165,9 +165,11 @@ survey.ui = function(div) {
                     document.body.appendChild(newDiv);
                     toShow = document.createTextNode(response)
                     document.body.appendChild(toShow);
-                });   
+                });
+                riskUI.run()   
         }   //end on "results" click function
         window.survey = survey
+        survey.resultDict = resultDict
 })()
 
 }

@@ -1,5 +1,5 @@
 console.log('breast cancer risk prediction tensorflow model loaded...')
-//works if I put "dev" inside the string!
+
 
 riskUI={}
 
@@ -12,11 +12,11 @@ riskUI.ui=function(div){
         let description = '<p>Please wait for the model to load.</p>'
         riskUI.div.innerHTML=h+description
 
-        var newDiv = document.createElement('div');
+        /*var newDiv = document.createElement('div');
         document.body.appendChild(newDiv);
 
         var startButton = document.createElement("button");
-        startButton.innerHTML = "Start Model";
+        startButton.innerHTML = "Train Model & Show Results";
 
         newDiv.appendChild(startButton);
 
@@ -24,8 +24,8 @@ riskUI.ui=function(div){
         startButton.addEventListener ("click", function() {
           console.log('clicked');
           riskUI.run()
-          survey
-        });
+                  console.log(survey.resultDict)
+        });*/
 
         const outcomes = ['developed_cancer','no_cancer']
         const num_outcomes = outcomes.length
@@ -90,7 +90,6 @@ riskUI.ui=function(div){
         between future cancer development yes/no
         (Make dependent on how many years ahead?)*/
 
-        
         async function processData(data){
             processedData = []
             minParticipationYears = 5
@@ -102,10 +101,6 @@ riskUI.ui=function(div){
                     //if developed cancer within 5 years
                     if(newObj.time_of_onset <= 5){
                         newObj['cancerWithinInterval'] = 1
-                        //console.log("testing")   //if I use the word "testing" this doesn't work?
-                        var x = ["dev", "test"];
-                        console.log(x)
-                        //completely fascinated as to what is happening
                     }
                     processedData.push(newObj)
                 }
