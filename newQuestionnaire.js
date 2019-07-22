@@ -107,6 +107,8 @@ survey.ui = function(div) {
                             resultDict[questID] = options[i]
                             console.log(resultDict)
                             action = true
+                            survey.action = action
+                            survey.resultDict = resultDict
                             return action
                         }
                     //store result somehow (not sure since multiple choice options are unlimited)
@@ -160,7 +162,7 @@ survey.ui = function(div) {
                     document.body.appendChild(toShow);
                 });   
         }   //end on "results" click function
-
+        window.survey = survey
 })()
 
 }

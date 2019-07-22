@@ -1,4 +1,4 @@
-console.log('riemann sum integration model loaded...')
+console.log('devriemann sum integration model loaded...')
 
 statUI={}
 

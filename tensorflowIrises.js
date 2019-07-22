@@ -120,6 +120,7 @@ tensorUI.ui=function(div){
         }
 
         function convertToTensors(data, targets, testSplit){
+             console.log("converting to tensors")
             const numExamples = data.length;
             if(numExamples != targets.length){
                 throw new Error('data and split have different numbers of examples');
@@ -197,6 +198,7 @@ tensorUI.ui=function(div){
 
             //test on specific cases
             const input = tf.tensor2d([5.8, 2.7, 5.1, 1.9], [1,4]);
+            console.log("input: " + input)
             const prediction = model.predict(input);
             alert("Probabilties for each flower: " + prediction);  //show distribution of probabilities
 

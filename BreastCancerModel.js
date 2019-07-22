@@ -1,4 +1,5 @@
 console.log('breast cancer risk prediction tensorflow model loaded...')
+//works if I put "dev" inside the string!
 
 riskUI={}
 
@@ -10,6 +11,20 @@ riskUI.ui=function(div){
         let h = `<h3>TensorFlow.js Breast Cancer Risk Prediction Model</h3>`
         let description = '<p>Please wait for the model to load.</p>'
         riskUI.div.innerHTML=h+description
+
+        var newDiv = document.createElement('div');
+        document.body.appendChild(newDiv);
+
+        var startButton = document.createElement("button");
+        startButton.innerHTML = "Start Model";
+
+        document.body.appendChild(startButton);
+
+        // 3. Add event handler
+        startButton.addEventListener ("click", function() {
+          console.log('clicked');
+          riskUI.run()
+        });
 
         const outcomes = ['developed_cancer','no_cancer']
         const num_outcomes = outcomes.length
@@ -86,7 +101,10 @@ riskUI.ui=function(div){
                     //if developed cancer within 5 years
                     if(newObj.time_of_onset <= 5){
                         newObj['cancerWithinInterval'] = 1
-                        console.log("developed within 5 years")
+                        //console.log("testing")   //if I use the word "testing" this doesn't work?
+                        var x = ["dev", "test"];
+                        console.log(x)
+                        //completely fascinated as to what is happening
                     }
                     processedData.push(newObj)
                 }
@@ -111,29 +129,28 @@ riskUI.ui=function(div){
                 }
 
                 //sort data by class (whether or not cancer developed)
-                for(const example of cancer_data){
-  
-                    
+                for(let i = 0; i < cancer_data.length; i++){
+                    example = cancer_data[i]
                     const target = example.cancerWithinInterval;    
                     console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
                     //array of data inputs
                     const data = 
-                        [example.famhist, 
-                        example. menarche_dec,
-                        example.parity,
-                        example.birth_dec,
-                        example.agemeno_dec,
-                        example.height_dec,
-                        example.bmi_dec,
-                        example.rd_menohrt,
-                        example.rd2_everhrt_c,
-                        example.rd2_everhrt_e,
-                        example.rd2_currhrt,
-                        example.alcoholdweek_dec,
-                        example.ever_smoke,
-                        example.study_entry_age]    
+                        [parseInt(example.famhist), 
+                        parseInt(example. menarche_dec),
+                        parseInt(example.parity),
+                        parseInt(example.birth_dec),
+                        parseInt(example.agemeno_dec),
+                        parseInt(example.height_dec),
+                        parseInt(example.bmi_dec),
+                        parseInt(example.rd_menohrt),
+                        parseInt(example.rd2_everhrt_c),
+                        parseInt(example.rd2_everhrt_e),
+                        parseInt(example.rd2_currhrt),
+                        parseInt(example.alcoholdweek_dec),
+                        parseInt(example.ever_smoke),
+                        parseInt(example.study_entry_age)]    
                         //study entry age doesn't tell us when the person actuall developed cancer
 
                     console.log("inputs " + data)
@@ -157,7 +174,7 @@ riskUI.ui=function(div){
                     xTests.push(xTest);
                     yTests.push(yTest);
                 }
-
+                console.log("pushed")
                 //concatonate testing and training data into 1D tensors
                 const concatAxis = 0;
                 const test1 = xTrains;
@@ -172,6 +189,7 @@ riskUI.ui=function(div){
 
         //define function to convert data to tensors, used in getCancerData()
         function convertToTensors(data, targets, testSplit){
+            console.log("converting to tensors")
             const numExamples = data.length;
             if(numExamples != targets.length){
                 throw new Error('data and split have different numbers of examples');
@@ -179,11 +197,13 @@ riskUI.ui=function(div){
 
             //may need to round depending on what testSplit ratio was given
             const numTestExamples = Math.round(numExamples * testSplit);
+            console.log('numTestExamples: ' + numTestExamples)
             //everything that isn't reserved as a testing example is used for training
             const numTrainExamples = numExamples - numTestExamples;
 
+            console.log("data[0]: " + data[0])
             const xDims = data[0].length;
-
+            console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
             const xs = tf.tensor2d(data, [numExamples, xDims]);
 
@@ -191,11 +211,15 @@ riskUI.ui=function(div){
             //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
             const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
 
-
+            console.log("feature data: " + xs)
+            console.log("labels: " + ys)
             //split data into training and test tests, using slice
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
+
+            console.log("about to slice")
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
+            console.log("sliced")
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
             const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
@@ -252,48 +276,56 @@ riskUI.ui=function(div){
                 loss: 'categoricalCrossentropy',
                 metrics: ['accuracy']});
 
+            const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
                 {epochs: numberOfEpochs, validationData: [xTest, yTest],
-                    callbacks: {
+                    /*callbacks: {
+                        
                         onEpochEnd: async (epoch, logs) => {
                             //watch the loss decrease :)
                             console.log("Epoch: " + epoch + " Logs: " + logs.loss);
                             await tf.nextFrame();
                         },
-                    }
+                    }*/
+                    callbacks:
+                    tfvis.show.fitCallbacks(surface, ['loss', 'acc'])
                 });
             return model;
         }   //end of trainModel function
 
 
         async function run(){
+            //alert("here")   //gets here
             const [xTrain, yTrain, xTest, yTest] = await getCancerData(0.2); 
             //reserve 20% of data for testing
-            alert("here")   //doesn't get here?
             model = await trainModel(xTrain, yTrain, xTest, yTest);
             //test on specific cases
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
 
-            const input = tf.tensor2d(testCase);
+            const input = tf.tensor2d(testCase,[1,14]);
+            console.log("input: " + input)     
+            console.log("wrong format?")         
             const prediction = model.predict(input);
-            const yourRisk = prediction[0]  //or at 1?
-            alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
+            const yourRisk = prediction  //or at 1?
+            console.log(yourRisk)
+            //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
             const averageRisk = 912/50000;  //is this an accurate baseline metric?
 
-            if(yourRisk > averageRisk){
+           /* if(yourRisk > averageRisk){
                 alert("Your risk is " + yourRisk - averageRisk + " above average.")
             } else {
                 alert("Your risk is " + averageRisk - yourRisk + " below average.")
-            }
+            }*/
 
             //how to test accuracy of model if outputting a probability?
             
             //alert("Prediction error rate: " + (wrong / yTrue.length));
             //good if error rate is low
         }
-        run()
+        riskUI.run = run
+
 
     }   //end of if(riskUI.div)
 }   //end of riskUI.ui=function(div)
