@@ -8,10 +8,11 @@ survey.ui = function(div) {
     if (survey.div) {
 
         //Header and text
+        /*
         let h = `<h3>Risk Prediction Questionnaire</h3>`
         let more = `<p>Learn more at <a href = "https://github.com/episphere/ai/wiki/cancer-risk-modeling" target = "_blank"> the GitHub Wiki</a>.</p>`
         h += more
-        survey.div.innerHTML = h;
+        survey.div.innerHTML = h;*/
 
 (async function(){
         async function readByIDs(url){

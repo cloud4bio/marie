@@ -18,12 +18,13 @@ riskUI.ui=function(div){
         var startButton = document.createElement("button");
         startButton.innerHTML = "Start Model";
 
-        document.body.appendChild(startButton);
+        newDiv.appendChild(startButton);
 
         // 3. Add event handler
         startButton.addEventListener ("click", function() {
           console.log('clicked');
           riskUI.run()
+          survey
         });
 
         const outcomes = ['developed_cancer','no_cancer']
@@ -333,6 +334,7 @@ riskUI.ui=function(div){
 //On page startup
 window.onload=function(){
     if(document.getElementById('workSpace')){
-        riskUI.ui(document.getElementById('workSpace'))    
+        riskUI.ui(document.getElementById('workSpace'))
+        survey.ui(document.getElementById('workSpace'))    
     }
 }
