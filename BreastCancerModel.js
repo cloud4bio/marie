@@ -40,7 +40,8 @@ riskUI.ui=function(div){
     //make sure that no header labels have periods in them, only underscores
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
-            url=url||'http://localhost:8000/marie/miniData.csv'
+            //url=url||'http://localhost:8000/marie/miniData.csv'
+            url=url||'http://localhost:8000/marie/validationCohort.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
 
@@ -92,6 +93,10 @@ riskUI.ui=function(div){
         async function processData(data){
             processedData = []
             minParticipationYears = 5
+            let countDeveloped = 0
+            let noCancer = []
+            let gotCancer = []
+
             //loop through objects in original data
             for(let i =0; i < data.length; i++){
                 newObj = data[i]
@@ -100,11 +105,27 @@ riskUI.ui=function(div){
                     //if developed cancer within 5 years
                     if(newObj.time_of_onset <= 5){
                         newObj['cancerWithinInterval'] = 1
+                        countDeveloped ++
+                        gotCancer.push(newObj)
                     }
-                    processedData.push(newObj)
+                    else{
+                        noCancer.push(newObj)       //separate array of those who didn't develop cancer
+                    }
+                    processedData.push(newObj)      //array of everyone who was in the study >= 5 years
                 }
             }
-            return processedData
+            
+            //create balanced cohort (same number of each observed outcome)
+            let shuffledNoCancer = shuffle(noCancer)
+            let narrowedNoCancer = []
+            for(j = 0; j < countDeveloped; j ++){        //assuming more people didn't develop cancer than did 
+                narrowedNoCancer.push(shuffledNoCancer[j])
+            }
+            
+            let balancedCohort = gotCancer.concat(narrowedNoCancer)
+            return balancedCohort
+
+            //return processedData
         }
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
         async function getCancerData(testSplit){
@@ -321,12 +342,12 @@ riskUI.ui=function(div){
 
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
 
-            const input = tf.tensor2d(testCase,[1,14]);
+            const input = tf.tensor2d(testCase, [1,14]);
             console.log("input: " + input)     
             console.log("wrong format?")         
             const prediction = model.predict(input);
-            const yourRisk = prediction  //or at 1?
-            console.log(yourRisk[0])
+            const yourRisk = prediction  
+            console.log(yourRisk[0])    //or at 1?
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
             const averageRisk = 912/50000;  //is this an accurate baseline metric?
