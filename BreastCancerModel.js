@@ -41,7 +41,8 @@ riskUI.ui=function(div){
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
             //url=url||'http://localhost:8000/marie/miniData.csv'
-            url=url||'http://localhost:8000/marie/validationCohort.csv'
+            //url=url||'http://localhost:8000/marie/validationCohort.csv'
+            url=url||'http://localhost:8000/marie/artificiallySelectedData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
 
@@ -117,6 +118,8 @@ riskUI.ui=function(div){
             
             //create balanced cohort (same number of each observed outcome)
             let shuffledNoCancer = shuffle(noCancer)
+
+            //SHOULDN'T BE CHOOSING A NEW COHORT EACH RUN
             let narrowedNoCancer = []
             for(j = 0; j < countDeveloped; j ++){        //assuming more people didn't develop cancer than did 
                 narrowedNoCancer.push(shuffledNoCancer[j])
@@ -148,7 +151,7 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(let i = 0; i < cancer_data.length; i++){
                     example = cancer_data[i]
-                    const target = example.cancerWithinInterval;    
+                    const target = parseInt(example.cancerWithinInterval);    
                     //console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
@@ -168,7 +171,6 @@ riskUI.ui=function(div){
                         parseInt(example.alcoholdweek_dec),
                         parseInt(example.ever_smoke),
                         parseInt(example.study_entry_age)]    
-                        //study entry age doesn't tell us when the person actuall developed cancer
 
                     //console.log("inputs " + data)
                     dataByClass[target].push(data);
@@ -279,18 +281,19 @@ riskUI.ui=function(div){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
             const numberOfEpochs = 1;      //edit
+            const numberPerBatch = 1; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
             console.log("shape" + xTrain.shape)
             //14 neurons for inputs
-            model.add(tf.layers.dense(
-                {units: 14, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+           // model.add(tf.layers.dense(
+            //    {units: 14, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
                 //sigmoid produces output between 0 and 1
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 3, activation: 'sigmoid'}));
+                {units: 8, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
@@ -307,7 +310,7 @@ riskUI.ui=function(div){
             const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
-                {epochs: numberOfEpochs, validationData: [xTest, yTest],
+                {epochs: numberOfEpochs, batchSize: numberPerBatch, validationData: [xTest, yTest],
                     /*callbacks: {
                         
                         onEpochEnd: async (epoch, logs) => {
@@ -319,6 +322,9 @@ riskUI.ui=function(div){
                     callbacks:
                     tfvis.show.fitCallbacks(surface, ['loss', 'acc'])
                 });
+                 console.log("weights" + model.getWeights())
+                 console.log("summary: " + model.summary())
+                //tfvis.show.modelSummary(surface, model);
             return model;
         }   //end of trainModel function
 
@@ -353,7 +359,7 @@ riskUI.ui=function(div){
             })*/
 
 
-            let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
+            let testCase = [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57] 
             var input = tf.tensor2d(testCase, [1,14]);
             //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
