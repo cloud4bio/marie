@@ -172,7 +172,10 @@ riskUI.ui=function(div){
 
                     console.log("inputs " + data)
                     dataByClass[target].push(data);
+                    console.log("data by class: " + dataByClass)
+                    console.log("this target " +target)
                     targetsByClass[target].push(target);
+                    console.log("targets by class: " + targetsByClass)
                 }
                 console.log(dataByClass);
                 console.log(targetsByClass);
@@ -185,7 +188,7 @@ riskUI.ui=function(div){
                 for(let i =0; i < outcomes.length; ++i){
                     const[xTrain, yTrain, xTest, yTest] = 
                         //convert to tensors to be used for training
-                        convertToTensors(dataByClass[i], targetsByClass[i], testSplit);
+                        convertToTensors(dataByClass[i], targetsByClass[0], testSplit);
                     xTrains.push(xTrain);
                     yTrains.push(yTrain);
                     xTests.push(xTest);
@@ -226,7 +229,10 @@ riskUI.ui=function(div){
 
             //create a 1D tensor to hold labels, and convert number label from
             //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
-            const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
+            //const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
+
+            console.log("targets: " + targets)
+            const ys = tf.tensor2d(targets,[numExamples,1])
 
             console.log("feature data: " + xs)
             console.log("labels: " + ys)
@@ -238,8 +244,12 @@ riskUI.ui=function(div){
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
             console.log("sliced")
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
-            const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
-            const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
+            //const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
+            //const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
+            const yTrain = ys.slice([0,0], [numTrainExamples, 1]);
+            console.log("yTrain: " + yTrain)
+            const yTest = ys.slice([numTrainExamples,0], [numTestExamples, 1]);
+            console.log("yTest: " + yTest)
             return [xTrain, yTrain, xTest, yTest];
         }   //end of convertToTensors function
 
@@ -276,21 +286,25 @@ riskUI.ui=function(div){
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
-            //one layer with 10 neurons
+            //14 neurons for inputs
             model.add(tf.layers.dense(
-                {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+                {units: 14, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
                 //sigmoid produces output between 0 and 1
             
+            //hidden layer with 10 neurons
+            model.add(tf.layers.dense(
+                {units: 10, activation: 'sigmoid'}));
+                //sigmoid produces output between 0 and 1
             //add more layers in between?
 
             //final layer with 3 neurons
             model.add(tf.layers.dense(
-                {units: 2, activation: 'softmax'}));    //2 units because classifying into 2 outcomes
-                //softmax normalizes values so outputs all add up to 1
+                {units: 1, activation: 'sigmoid'}));
+                //sigmoid used for binary classification
 
             model.compile({
                 optimizer: optimizer,
-                loss: 'categoricalCrossentropy',
+                loss: 'binaryCrossentropy',
                 metrics: ['accuracy']});
 
             const surface = { name: 'show.fitCallbacks', tab: 'Training' };
@@ -342,7 +356,6 @@ riskUI.ui=function(div){
 
             let testCase = [0,2,3,3,2,4,2,0,0,0,0,2,1,55] 
             var input = tf.tensor2d(testCase, [1,14]);
-            input = input.reshape([1,14])
             //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
             console.log("wrong format?")
