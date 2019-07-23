@@ -40,7 +40,7 @@ survey.ui = function(div) {
         var keys = []
 
         while(!finished){
-            console.log('not finished')
+            //console.log('not finished')
 
             //access attributes of question
             var currQuestion = currItem.Question

@@ -170,15 +170,13 @@ riskUI.ui=function(div){
                         parseInt(example.study_entry_age)]    
                         //study entry age doesn't tell us when the person actuall developed cancer
 
-                    console.log("inputs " + data)
+                    //console.log("inputs " + data)
                     dataByClass[target].push(data);
-                    console.log("data by class: " + dataByClass)
-                    console.log("this target " +target)
                     targetsByClass[target].push(target);
-                    console.log("targets by class: " + targetsByClass)
+                   // console.log("targets by class: " + targetsByClass)
                 }
-                console.log(dataByClass);
-                console.log(targetsByClass);
+                console.log("0's : " + targetsByClass[0]);
+                console.log("1's : " + targetsByClass[1]);
 
                 //tensors to hold training and testing datasets
                 const xTrains = [];
@@ -188,22 +186,23 @@ riskUI.ui=function(div){
                 for(let i =0; i < outcomes.length; ++i){
                     const[xTrain, yTrain, xTest, yTest] = 
                         //convert to tensors to be used for training
-                        convertToTensors(dataByClass[i], targetsByClass[0], testSplit);
+                        convertToTensors(dataByClass[i], targetsByClass[i], testSplit);
                     xTrains.push(xTrain);
                     yTrains.push(yTrain);
                     xTests.push(xTest);
                     yTests.push(yTest);
                 }
-                console.log("pushed")
                 //concatonate testing and training data into 1D tensors
                 const concatAxis = 0;
                 const test1 = xTrains;
                 const test2 = tf.concat(xTrains, concatAxis)
                 console.log(test1)
                 console.log(test2)
-                return [
+                const concatenated = [
                     tf.concat(xTrains,concatAxis), tf.concat(yTrains, concatAxis),
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]
+                console.log("concatenated" + concatenated)
+                return concatenated
             })
         }   //end of getCancerData function
 
@@ -221,7 +220,6 @@ riskUI.ui=function(div){
             //everything that isn't reserved as a testing example is used for training
             const numTrainExamples = numExamples - numTestExamples;
 
-            console.log("data[0]: " + data[0])
             const xDims = data[0].length;   //length of each object holding inputs
             console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
@@ -231,7 +229,6 @@ riskUI.ui=function(div){
             //the set {0,1} into one-hot encoding (e.g. 0 --> [1,0])
             //const ys = tf.oneHot(tf.tensor1d(targets).toInt(), num_outcomes);
 
-            console.log("targets: " + targets)
             const ys = tf.tensor2d(targets,[numExamples,1])
 
             console.log("feature data: " + xs)
@@ -240,9 +237,7 @@ riskUI.ui=function(div){
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
 
-            console.log("about to slice")
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
-            console.log("sliced")
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             //const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
             //const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
@@ -334,7 +329,7 @@ riskUI.ui=function(div){
             //test on specific cases
 
             userInput = survey.resultDict
-            console.log("user's input: " + userInput)
+            //console.log("user's input: " + userInput)
 
             var inputArray = []
 
@@ -360,10 +355,10 @@ riskUI.ui=function(div){
             console.log("input: " + input)     
             console.log("wrong format?")
             const prediction = model.predict(input);
-            console.log(typeof prediction)
+            //console.log(typeof prediction)
             console.log(prediction)
             const yourRisk = prediction  
-            console.log(yourRisk[0])    //or at 1?
+            //console.log(yourRisk[0])    //or at 1?
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
             const averageRisk = 912/50000;  //is this an accurate baseline metric?
