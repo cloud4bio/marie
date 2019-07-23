@@ -149,7 +149,7 @@ riskUI.ui=function(div){
                 for(let i = 0; i < cancer_data.length; i++){
                     example = cancer_data[i]
                     const target = example.cancerWithinInterval;    
-                    console.log("observed outcome " + target)
+                    //console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
                     //array of data inputs
@@ -175,8 +175,8 @@ riskUI.ui=function(div){
                     targetsByClass[target].push(target);
                    // console.log("targets by class: " + targetsByClass)
                 }
-                console.log("0's : " + targetsByClass[0]);
-                console.log("1's : " + targetsByClass[1]);
+                //console.log("targetsByClass[0] : " + targetsByClass[0]);
+                //console.log("targetsByClass[1] : " + targetsByClass[1]);
 
                 //tensors to hold training and testing datasets
                 const xTrains = [];
@@ -216,12 +216,12 @@ riskUI.ui=function(div){
 
             //may need to round depending on what testSplit ratio was given
             const numTestExamples = Math.round(numExamples * testSplit);
-            console.log('numTestExamples: ' + numTestExamples)
+            //console.log('numTestExamples: ' + numTestExamples)
             //everything that isn't reserved as a testing example is used for training
             const numTrainExamples = numExamples - numTestExamples;
 
             const xDims = data[0].length;   //length of each object holding inputs
-            console.log("xDims: " + xDims)
+            //console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
             const xs = tf.tensor2d(data, [numExamples, xDims]);
 
@@ -231,21 +231,22 @@ riskUI.ui=function(div){
 
             const ys = tf.tensor2d(targets,[numExamples,1])
 
-            console.log("feature data: " + xs)
-            console.log("labels: " + ys)
+            //console.log("feature data: " + xs)
+            //console.log("labels: " + ys)
             //split data into training and test tests, using slice
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
 
+            console.log("training examples: " + numTrainExamples)
             const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
+
             const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
             //const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
             //const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
             const yTrain = ys.slice([0,0], [numTrainExamples, 1]);
-            console.log("yTrain: " + yTrain)
             const yTest = ys.slice([numTrainExamples,0], [numTestExamples, 1]);
-            console.log("yTest: " + yTest)
-            return [xTrain, yTrain, xTest, yTest];
+            result = [xTrain, yTrain, xTest, yTest];
+            return result
         }   //end of convertToTensors function
 
     //randomly shuffle order of elements in array
@@ -281,6 +282,7 @@ riskUI.ui=function(div){
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
+            console.log("shape" + xTrain.shape)
             //14 neurons for inputs
             model.add(tf.layers.dense(
                 {units: 14, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
@@ -288,7 +290,7 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 10, activation: 'sigmoid'}));
+                {units: 3, activation: 'sigmoid'}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
@@ -323,7 +325,9 @@ riskUI.ui=function(div){
 
         async function run(){
             //alert("here")   //gets here
-            const [xTrain, yTrain, xTest, yTest] = await getCancerData(0.2); 
+            const accessData = await getCancerData(0.2)
+            //console.log("training arr: " + accessData)
+            const [xTrain, yTrain, xTest, yTest] = accessData; 
             //reserve 20% of data for testing
             model = await trainModel(xTrain, yTrain, xTest, yTest);
             //test on specific cases
