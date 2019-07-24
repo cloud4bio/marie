@@ -40,9 +40,9 @@ riskUI.ui=function(div){
     //make sure that no header labels have periods in them, only underscores
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
-            //url=url||'http://localhost:8000/marie/miniData.csv'
-            url=url||'http://localhost:8000/marie/validationCohort.csv'
-            //url=url||'http://localhost:8000/marie/artificiallySelectedData.csv'
+            //url=url||'miniData.csv'
+            url=url||'validationCohort.csv'
+            //url=url||'artificiallySelectedData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
 
