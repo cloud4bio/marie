@@ -141,6 +141,11 @@ riskUI.ui=function(div){
             console.log(cancer_data)
 
             return tf.tidy(() => {
+                //alternative approach, not separating by classes
+                const allData = []
+                const allTargets = []
+
+
                 const dataByClass = [];
                 const targetsByClass = [];
                 for(let i = 0; i < outcomes.length; ++i){
@@ -172,8 +177,12 @@ riskUI.ui=function(div){
                         parseInt(example.ever_smoke),
                         parseInt(example.study_entry_age)]    
 
+                    //alternative approach, not separating by classes
+                    allData.push(data)
+                    allTargets.push(target)
                     //console.log("inputs " + data)
                     dataByClass[target].push(data);
+                    console.log("target: " + target)
                     targetsByClass[target].push(target);
                    // console.log("targets by class: " + targetsByClass)
                 }
@@ -194,12 +203,30 @@ riskUI.ui=function(div){
                     xTests.push(xTest);
                     yTests.push(yTest);
                 }
+
+                const allInputTrains =[]
+                const allOutputTrains = []
+                const allInputTests = []
+                const allOutputTests = []
+
+                //alternative approach, not separating by classes
+                const[allXTrains, allYTrains, allXTests, allYTests] = 
+                    convertToTensors(allData, allTargets, testSplit)
+                allInputTrains.push(allXTrains)
+                allOutputTrains.push(allYTrains)
+                allInputTests.push(allXTests)
+                allOutputTests.push(allYTests)
+                
                 //concatonate testing and training data into 1D tensors
                 const concatAxis = 0;
                 const test1 = xTrains;
                 const test2 = tf.concat(xTrains, concatAxis)
                 console.log(test1)
                 console.log(test2)
+                console.log("x Training: " + xTrains)
+                console.log("y Training: " + yTrains)
+                console.log("x Testing: " + xTests)
+                console.log("y Testing: " + yTests)
                 const concatenated = [
                     tf.concat(xTrains,concatAxis), tf.concat(yTrains, concatAxis),
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]
@@ -355,6 +382,7 @@ riskUI.ui=function(div){
                 else{
                     inputArray.push(resultDict[key])
                     //ORDER has to be correct
+                    //have to transfer to all numerical values
                 }
             })*/
 

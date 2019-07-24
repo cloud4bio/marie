@@ -113,6 +113,12 @@ tensorUI.ui=function(div){
                 const test2 = tf.concat(xTrains, concatAxis)
                 console.log(test1)
                 console.log(test2)
+
+                console.log("x Training: " + xTrains)
+                console.log("y Training: " + yTrains)
+                console.log("x Testing: " + xTests)
+                console.log("y Testing: " + yTests)
+                
                 return [
                     tf.concat(xTrains,concatAxis), tf.concat(yTrains, concatAxis),
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]

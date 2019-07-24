@@ -17,7 +17,7 @@ survey.ui = function(div) {
 (async function(){
         async function readByIDs(url){
             //q = readJSON()
-            url = url||'http://localhost:8000/marie/questions.json'     //update to cloud4bio page
+            url = url||'questions.json'     //update to cloud4bio page
             q = await (await fetch(url)).json()
             qq={}
             q.forEach(qi=>{qq[qi['ID']]=qi})
