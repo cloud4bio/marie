@@ -140,7 +140,7 @@ riskUI.ui=function(div){
 
             console.log("data: ")
             console.log(cancer_data)
-
+            
             return tf.tidy(() => {
                 //alternative approach, not separating by classes
                 const allData = []

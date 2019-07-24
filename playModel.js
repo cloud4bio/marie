@@ -93,8 +93,10 @@ riskUI.ui=function(div){
 
         async function processData(data){
             processedData = []
+            console.log("data length" + data.length)
             for(let i =0; i < data.length; i++){
                 newObj = data[i]
+                console.log(newObj)
                 processedData.push(newObj)
             }
             return processedData
@@ -316,7 +318,7 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 1;      //edit
+            const numberOfEpochs = 20;      //edit
             //const numberPerBatch = 1; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
