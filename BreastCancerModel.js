@@ -41,8 +41,8 @@ riskUI.ui=function(div){
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
             //url=url||'http://localhost:8000/marie/miniData.csv'
-            //url=url||'http://localhost:8000/marie/validationCohort.csv'
-            url=url||'http://localhost:8000/marie/artificiallySelectedData.csv'
+            url=url||'http://localhost:8000/marie/validationCohort.csv'
+            //url=url||'http://localhost:8000/marie/artificiallySelectedData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
 
@@ -138,6 +138,7 @@ riskUI.ui=function(div){
             //shuffle data
             cancer_data = shuffle(processedData)
 
+            console.log("data: ")
             console.log(cancer_data)
 
             return tf.tidy(() => {
@@ -187,6 +188,9 @@ riskUI.ui=function(div){
                     targetsByClass[target].push(target);
                    */
                 }
+                
+                console.log("filtered data: ")
+                console.log(allData)
                 //console.log("targetsByClass[0] : " + targetsByClass[0]);
                 //console.log("targetsByClass[1] : " + targetsByClass[1]);
 
@@ -228,7 +232,7 @@ riskUI.ui=function(div){
                 console.log("x Testing: " + xTests)
                 console.log("y Testing: " + yTests)
 
-                
+
                 const concatenated = [
                     tf.concat(xTrains,concatAxis), tf.concat(yTrains, concatAxis),
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]
@@ -318,7 +322,7 @@ riskUI.ui=function(div){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
             const numberOfEpochs = 1;      //edit
-            const numberPerBatch = 1; //edit
+            const numberPerBatch = 40; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
@@ -360,7 +364,8 @@ riskUI.ui=function(div){
                     tfvis.show.fitCallbacks(surface, ['loss', 'acc'])
                 });
                  console.log("weights" + model.getWeights())
-                 console.log("summary: " + model.summary())
+                 tfvis.show.modelSummary({name: 'Model Summary'}, model);
+                 //console.log(model.summary())
                 //tfvis.show.modelSummary(surface, model);
             return model;
         }   //end of trainModel function
