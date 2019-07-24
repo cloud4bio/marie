@@ -1,4 +1,4 @@
-console.log('breast cancer risk prediction tensorflow model loaded...')
+console.log('play tensorflow model loaded...')
 
 
 riskUI={}
@@ -8,7 +8,7 @@ riskUI.ui=function(div){
 
     if(riskUI.div){
         //Header and text
-        let h = `<h3>TensorFlow.js Breast Cancer Risk Prediction Model</h3>`
+        let h = `<h3>TensorFlow.js Play Model</h3>`
         riskUI.div.innerHTML=h
 
         /*var newDiv = document.createElement('div');
@@ -41,7 +41,7 @@ riskUI.ui=function(div){
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
             //url=url||'miniData.csv'
-            url=url||'validationCohort.csv'
+            url=url||'testCSV.csv'
             //url=url||'artificiallySelectedData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
             const hh = rr[0] // headers
@@ -93,6 +93,13 @@ riskUI.ui=function(div){
 
         async function processData(data){
             processedData = []
+            for(let i =0; i < data.length; i++){
+                newObj = data[i]
+                processedData.push(newObj)
+            }
+            return processedData
+        }
+            /*
             minParticipationYears = 5
             let countDeveloped = 0
             let noCancer = []
@@ -130,7 +137,7 @@ riskUI.ui=function(div){
             return balancedCohort
 
             //return processedData
-        }
+        }*/
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
         async function getCancerData(testSplit){
             original_cancer_data = await csv2json()
@@ -157,26 +164,14 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(let i = 0; i < cancer_data.length; i++){
                     example = cancer_data[i]
-                    const target = parseInt(example.cancerWithinInterval);    
+                    const target = parseInt(example.c);    
                     //console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
                     //array of data inputs
                     const data = 
-                        [parseInt(example.famhist), 
-                        parseInt(example. menarche_dec),
-                        parseInt(example.parity),
-                        parseInt(example.birth_dec),
-                        parseInt(example.agemeno_dec),
-                        parseInt(example.height_dec),
-                        parseInt(example.bmi_dec),
-                        parseInt(example.rd_menohrt),
-                        parseInt(example.rd2_everhrt_c),
-                        parseInt(example.rd2_everhrt_e),
-                        parseInt(example.rd2_currhrt),
-                        parseInt(example.alcoholdweek_dec),
-                        parseInt(example.ever_smoke),
-                        parseInt(example.study_entry_age)]    
+                        [parseInt(example.a), 
+                        parseInt(example.b)]    
 
                     //alternative approach, not separating by classes
                     allData.push(data)
@@ -321,8 +316,8 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 3;      //edit
-            const numberPerBatch = 20; //edit
+            const numberOfEpochs = 1;      //edit
+            //const numberPerBatch = 1; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
@@ -352,7 +347,7 @@ riskUI.ui=function(div){
             const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
-                {epochs: numberOfEpochs, batchSize: numberPerBatch, validationData: [xTest, yTest],
+                {epochs: numberOfEpochs, validationData: [xTest, yTest],
                     /*callbacks: {
                         
                         onEpochEnd: async (epoch, logs) => {
@@ -403,8 +398,8 @@ riskUI.ui=function(div){
             })*/
 
 
-            let testCase = [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57] 
-            var input = tf.tensor2d(testCase, [1,14]);
+            let testCase = [15,2] 
+            var input = tf.tensor2d(testCase, [1,2]);
             //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
             console.log("wrong format?")
