@@ -145,13 +145,13 @@ riskUI.ui=function(div){
                 const allData = []
                 const allTargets = []
 
-
+               /*
                 const dataByClass = [];
                 const targetsByClass = [];
                 for(let i = 0; i < outcomes.length; ++i){
                     dataByClass.push([]);
                     targetsByClass.push([]);
-                }
+                }*/
 
                 //sort data by class (whether or not cancer developed)
                 for(let i = 0; i < cancer_data.length; i++){
@@ -180,11 +180,12 @@ riskUI.ui=function(div){
                     //alternative approach, not separating by classes
                     allData.push(data)
                     allTargets.push(target)
-                    //console.log("inputs " + data)
+                    
+                    /*
                     dataByClass[target].push(data);
                     console.log("target: " + target)
                     targetsByClass[target].push(target);
-                   // console.log("targets by class: " + targetsByClass)
+                   */
                 }
                 //console.log("targetsByClass[0] : " + targetsByClass[0]);
                 //console.log("targetsByClass[1] : " + targetsByClass[1]);
@@ -194,7 +195,8 @@ riskUI.ui=function(div){
                 const yTrains = [];
                 const xTests = [];
                 const yTests = [];
-                for(let i =0; i < outcomes.length; ++i){
+
+                /*for(let i =0; i < outcomes.length; ++i){
                     const[xTrain, yTrain, xTest, yTest] = 
                         //convert to tensors to be used for training
                         convertToTensors(dataByClass[i], targetsByClass[i], testSplit);
@@ -202,7 +204,7 @@ riskUI.ui=function(div){
                     yTrains.push(yTrain);
                     xTests.push(xTest);
                     yTests.push(yTest);
-                }
+                }*/
 
                 const allInputTrains =[]
                 const allOutputTrains = []
@@ -216,22 +218,30 @@ riskUI.ui=function(div){
                 allOutputTrains.push(allYTrains)
                 allInputTests.push(allXTests)
                 allOutputTests.push(allYTests)
-                
+
                 //concatonate testing and training data into 1D tensors
                 const concatAxis = 0;
-                const test1 = xTrains;
-                const test2 = tf.concat(xTrains, concatAxis)
-                console.log(test1)
-                console.log(test2)
+
+                /*
                 console.log("x Training: " + xTrains)
                 console.log("y Training: " + yTrains)
                 console.log("x Testing: " + xTests)
                 console.log("y Testing: " + yTests)
+
+                
                 const concatenated = [
                     tf.concat(xTrains,concatAxis), tf.concat(yTrains, concatAxis),
                     tf.concat(xTests,concatAxis), tf.concat(yTests, concatAxis)]
-                console.log("concatenated" + concatenated)
-                return concatenated
+                console.log("concatenated" + concatenated)*/
+
+                //alternative approach, not separating by classes
+                const alternateMerged = [
+                    tf.concat(allInputTrains,concatAxis), tf.concat(allOutputTrains, concatAxis),
+                    tf.concat(allInputTests,concatAxis), tf.concat(allOutputTests, concatAxis)]
+                console.log("all merged" + alternateMerged)
+
+                return alternateMerged
+                //return concatenated
             })
         }   //end of getCancerData function
 
