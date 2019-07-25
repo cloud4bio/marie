@@ -139,8 +139,10 @@ riskUI.ui=function(div){
             let shuffledNoCancer = shuffle(noCancer)
             let shuffledGotCancer = shuffle(gotCancer)
 
-            let testingReserve = 100
-            let split =  await overSample(shuffledGotCancer, testingReserve, 1)
+            let testingFraction = 0.2
+            let testingReserve = testingFraction * gotCancer.length
+            let factor = 1
+            let split =  await overSample(shuffledGotCancer, testingReserve, factor)
             let reservedCancer = split[0]
             let multiplied = split[1]
 
@@ -280,7 +282,7 @@ riskUI.ui=function(div){
                 const allTargets = trainTargets.concat(testTargets)
                 const numTest = testData.length
                 const numTrain = trainData.length
-                
+
                 //alternative approach, not separating by classes
                 const[allXTrains, allYTrains, allXTests, allYTests] = 
                     convertToTensors(allData, allTargets, numTest, numTrain)
@@ -346,7 +348,7 @@ riskUI.ui=function(div){
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
 
-            console.log("training examples: " + numTrain)
+            //console.log("training examples: " + numTrain)
             const xTrain = xs.slice([0,0], [numTrain, xDims]);
 
             const xTest = xs.slice([numTrain,0], [numTest, xDims]);
@@ -387,7 +389,7 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 1;      //edit
+            const numberOfEpochs = 40;      //edit
             //const numberPerBatch = 3; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
