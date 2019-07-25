@@ -205,7 +205,7 @@ riskUI.ui=function(div){
                         cat = 'testing'
                     }
 
-                    console.log(example)
+                   // console.log(example)
                    // example = cancer_data[i]
                     //const target = [parseInt(example.cancerWithinInterval)];
                     const target = [parseInt(example.cancerWithinInterval)];
@@ -275,7 +275,12 @@ riskUI.ui=function(div){
                 const allOutputTrains = []
                 const allInputTests = []
                 const allOutputTests = []
-
+                
+                const allData = trainData.concat(testData)
+                const allTargets = trainTargets.concat(testTargets)
+                const numTest = testData.length
+                const numTrain = trainData.length
+                
                 //alternative approach, not separating by classes
                 const[allXTrains, allYTrains, allXTests, allYTests] = 
                     convertToTensors(allData, allTargets, numTest, numTrain)
@@ -311,7 +316,7 @@ riskUI.ui=function(div){
         }   //end of getCancerData function
 
         //define function to convert data to tensors, used in getCancerData()
-        function convertToTensors(data, targets, testSplit){
+        function convertToTensors(data, targets, numTest, numTrain){
             console.log("converting to tensors")
             const numExamples = data.length;
             if(numExamples != targets.length){
@@ -323,7 +328,7 @@ riskUI.ui=function(div){
             //console.log('numTestExamples: ' + numTestExamples)
             //everything that isn't reserved as a testing example is used for training
             //const numTrainExamples = numExamples - numTestExamples;
-            
+
             const xDims = data[0].length;   //length of each object holding inputs
             //console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
