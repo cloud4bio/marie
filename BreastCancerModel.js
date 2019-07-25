@@ -97,11 +97,11 @@ riskUI.ui=function(div){
             var numTraining = 100
             reserved = data.slice(0,numTraining)
             toMultiply = data.slice(numTraining)
-            
+
             for(i = 0; i < factor - 1; i++){
                 toMultiply = toMultiply.concat(toMultiply)
             }
-            return toMultiply
+            return [reserved,toMultiply]
         }
 
         async function processData(data){
@@ -134,12 +134,13 @@ riskUI.ui=function(div){
             let shuffledNoCancer = shuffle(noCancer)
             let shuffledGotCancer = shuffle(gotCancer)
 
+            let split =  overSample(shuffledGotCancer, 10)
+            let reserved = split[0]
+            let multiplied = split[1]
+
             //SHOULDN'T BE CHOOSING A NEW COHORT EACH RUN
             let narrowedNoCancer = []
-            for(j = 0; j < countDeveloped; j ++){        //assuming more people didn't develop cancer than did 
-                narrowedNoCancer.push(shuffledNoCancer[j])
-            }
-            
+            narrowedNoCancer = shuffledNoCancer.slice(0,countDeveloped)
             
             let balancedCohort = gotCancer.concat(narrowedNoCancer)
             //console.log(balancedCohort)
