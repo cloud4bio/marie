@@ -91,22 +91,26 @@ riskUI.ui=function(div){
         between future cancer development yes/no
         (Make dependent on how many years ahead?)*/
 
-        async function overSample(data, factor){
+        async function overSample(data, reserveNum, factor){
+            console.log(data.length)
             var reserved = []
             var toMultiply = []
-            var numTraining = 100
+            var numTraining = reserveNum
             reserved = data.slice(0,numTraining)
             toMultiply = data.slice(numTraining)
-
             for(i = 0; i < factor - 1; i++){
                 toMultiply = toMultiply.concat(toMultiply)
             }
-            return [reserved,toMultiply]
+            
+            let both = []
+            both.push(reserved)
+            both.push(toMultiply)
+            return both
         }
 
         async function processData(data){
             processedData = []
-            minParticipationYears = 12
+            minParticipationYears = 5
             let countDeveloped = 0
             let noCancer = []
             let gotCancer = []
@@ -130,19 +134,29 @@ riskUI.ui=function(div){
                 }
             }
             
+            console.log('got cancer:' + gotCancer.length)
             //create balanced cohort (same number of each observed outcome)
             let shuffledNoCancer = shuffle(noCancer)
             let shuffledGotCancer = shuffle(gotCancer)
 
-            let split =  overSample(shuffledGotCancer, 10)
-            let reserved = split[0]
+            let testingReserve = 100
+            let split =  await overSample(shuffledGotCancer, testingReserve, 1)
+            let reservedCancer = split[0]
             let multiplied = split[1]
 
+            let reservedNoCancer = shuffledNoCancer.slice(0, testingReserve)
+            let remainingCancer = shuffledNoCancer.slice(testingReserve)
+            //console.log('reserved')
+            //console.log(multiplied)
+            
             //SHOULDN'T BE CHOOSING A NEW COHORT EACH RUN
             let narrowedNoCancer = []
-            narrowedNoCancer = shuffledNoCancer.slice(0,countDeveloped)
+            narrowedNoCancer = remainingCancer.slice(0,multiplied.length)
             
-            let balancedCohort = gotCancer.concat(narrowedNoCancer)
+            let balancedTraining = multiplied.concat(narrowedNoCancer)
+            let balancedTesting = reservedCancer.concat(reservedNoCancer)
+            
+            let balancedCohort = [balancedTraining, balancedTesting]
             //console.log(balancedCohort)
             return balancedCohort
 
@@ -338,8 +352,8 @@ riskUI.ui=function(div){
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
-            const learningRate = 0.1;      //edit
-            const numberOfEpochs = 3;      //edit
+            const learningRate = 0.01;      //edit
+            const numberOfEpochs = 1;      //edit
             //const numberPerBatch = 3; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
