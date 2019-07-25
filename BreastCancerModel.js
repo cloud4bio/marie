@@ -91,6 +91,19 @@ riskUI.ui=function(div){
         between future cancer development yes/no
         (Make dependent on how many years ahead?)*/
 
+        async function overSample(data, factor){
+            var reserved = []
+            var toMultiply = []
+            var numTraining = 100
+            reserved = data.slice(0,numTraining)
+            toMultiply = data.slice(numTraining)
+            
+            for(i = 0; i < factor - 1; i++){
+                toMultiply = toMultiply.concat(toMultiply)
+            }
+            return toMultiply
+        }
+
         async function processData(data){
             processedData = []
             minParticipationYears = 12
@@ -119,13 +132,7 @@ riskUI.ui=function(div){
             
             //create balanced cohort (same number of each observed outcome)
             let shuffledNoCancer = shuffle(noCancer)
-
-            //OVERSAMPLE
-            /*
-            for(i = 0; i < 9; i++){
-                gotCancer = gotCancer.concat(gotCancer)
-            }
-            countDeveloped = 10*countDeveloped*/
+            let shuffledGotCancer = shuffle(gotCancer)
 
             //SHOULDN'T BE CHOOSING A NEW COHORT EACH RUN
             let narrowedNoCancer = []
