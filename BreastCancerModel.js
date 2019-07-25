@@ -40,7 +40,7 @@ riskUI.ui=function(div){
     //make sure that no header labels have periods in them, only underscores
         csv2json=async function(url){
             //miniData.csv file contains the first 250 rows 
-            //url=url||'miniData.csv'
+            //url=url||'obviousData.csv'
             url=url||'validationCohort.csv'
             //url=url||'artificiallySelectedData.csv'
             const rr = (await (await fetch(url)).text()).split('\n').map(r=>r.split(',')) //rows
@@ -93,7 +93,7 @@ riskUI.ui=function(div){
 
         async function processData(data){
             processedData = []
-            minParticipationYears = 5
+            minParticipationYears = 12
             let countDeveloped = 0
             let noCancer = []
             let gotCancer = []
@@ -104,7 +104,8 @@ riskUI.ui=function(div){
                 newObj['cancerWithinInterval'] = 0
                 if(newObj.observed_followup >= minParticipationYears){
                     //if developed cancer within 5 years
-                    if(newObj.time_of_onset <= 5){
+                   // if(newObj.time_of_onset <= 5){
+                    if(newObj.time_of_onset <= minParticipationYears){              //TEST: cancer development directly equal to family history
                         newObj['cancerWithinInterval'] = 1
                         countDeveloped ++
                         gotCancer.push(newObj)
@@ -119,11 +120,19 @@ riskUI.ui=function(div){
             //create balanced cohort (same number of each observed outcome)
             let shuffledNoCancer = shuffle(noCancer)
 
+            //OVERSAMPLE
+            /*
+            for(i = 0; i < 9; i++){
+                gotCancer = gotCancer.concat(gotCancer)
+            }
+            countDeveloped = 10*countDeveloped*/
+
             //SHOULDN'T BE CHOOSING A NEW COHORT EACH RUN
             let narrowedNoCancer = []
             for(j = 0; j < countDeveloped; j ++){        //assuming more people didn't develop cancer than did 
                 narrowedNoCancer.push(shuffledNoCancer[j])
             }
+            
             
             let balancedCohort = gotCancer.concat(narrowedNoCancer)
             //console.log(balancedCohort)
@@ -157,7 +166,8 @@ riskUI.ui=function(div){
                 //sort data by class (whether or not cancer developed)
                 for(let i = 0; i < cancer_data.length; i++){
                     example = cancer_data[i]
-                    const target = parseInt(example.cancerWithinInterval);    
+                    //const target = [parseInt(example.cancerWithinInterval)];
+                    const target = [parseInt(example.cancerWithinInterval)];
                     //console.log("observed outcome " + target)
                     //const data = delete example.observed_outcome; 
 
@@ -176,7 +186,7 @@ riskUI.ui=function(div){
                         parseInt(example.rd2_currhrt),
                         parseInt(example.alcoholdweek_dec),
                         parseInt(example.ever_smoke),
-                        parseInt(example.study_entry_age)]    
+                        parseInt(example.study_entry_age)]  
 
                     //alternative approach, not separating by classes
                     allData.push(data)
@@ -320,9 +330,9 @@ riskUI.ui=function(div){
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
-            const learningRate = 0.01;      //edit
+            const learningRate = 0.1;      //edit
             const numberOfEpochs = 3;      //edit
-            const numberPerBatch = 20; //edit
+            //const numberPerBatch = 3; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
@@ -334,7 +344,7 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 8, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+                {units: 16, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
@@ -352,7 +362,7 @@ riskUI.ui=function(div){
             const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
-                {epochs: numberOfEpochs, batchSize: numberPerBatch, validationData: [xTest, yTest],
+                {epochs: numberOfEpochs, /*batchSize: numberPerBatch, */validationData: [xTest, yTest],
                     /*callbacks: {
                         
                         onEpochEnd: async (epoch, logs) => {
