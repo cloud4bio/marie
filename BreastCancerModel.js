@@ -155,7 +155,9 @@ riskUI.ui=function(div){
             
             let balancedTraining = multiplied.concat(narrowedNoCancer)
             let balancedTesting = reservedCancer.concat(reservedNoCancer)
-            
+
+            console.log(balancedTraining.length)
+            console.log(balancedTesting.length)
             let balancedCohort = [balancedTraining, balancedTesting]
             //console.log(balancedCohort)
             return balancedCohort
@@ -167,15 +169,20 @@ riskUI.ui=function(div){
             original_cancer_data = await csv2json()
             processedData = await processData(original_cancer_data)
             //shuffle data
-            cancer_data = shuffle(processedData)
+            //cancer_data = shuffle(processedData)
+            const training_data = shuffle(processedData[0])
+            const testing_data = shuffle(processedData[1])
 
             console.log("data: ")
-            console.log(cancer_data)
+            console.log(training_data)
+            console.log(testing_data)
             
             return tf.tidy(() => {
                 //alternative approach, not separating by classes
-                const allData = []
-                const allTargets = []
+                const trainData = []
+                const trainTargets = []
+                const testData = []
+                const testTargets = []
 
                /*
                 const dataByClass = [];
@@ -186,8 +193,20 @@ riskUI.ui=function(div){
                 }*/
 
                 //sort data by class (whether or not cancer developed)
-                for(let i = 0; i < cancer_data.length; i++){
-                    example = cancer_data[i]
+                let total_length = training_data.length + testing_data.length
+                var example;
+                var cat;
+                for(let i = 0; i < total_length; i++){ 
+                    if(i < training_data.length){
+                        example = training_data[i]
+                        cat = 'training'
+                    } else {
+                        example = testing_data[i - training_data.length]
+                        cat = 'testing'
+                    }
+
+                    console.log(example)
+                   // example = cancer_data[i]
                     //const target = [parseInt(example.cancerWithinInterval)];
                     const target = [parseInt(example.cancerWithinInterval)];
                     //console.log("observed outcome " + target)
@@ -211,8 +230,16 @@ riskUI.ui=function(div){
                         parseInt(example.study_entry_age)]  
 
                     //alternative approach, not separating by classes
-                    allData.push(data)
-                    allTargets.push(target)
+                    //allData.push(data)
+                    //allTargets.push(target)
+
+                    if(cat == 'training'){
+                        trainData.push(data)
+                        trainTargets.push(target)
+                    } else if(cat == 'testing'){
+                        testData.push(data)
+                        testTargets.push(target)
+                    }
                     
                     /*
                     dataByClass[target].push(data);
@@ -221,8 +248,10 @@ riskUI.ui=function(div){
                    */
                 }
                 
-                console.log("filtered data: ")
-                console.log(allData)
+                console.log("filtered training data: ")
+                console.log(trainData)
+                console.log("filtered testing data: ")
+                console.log(testData)
                 //console.log("targetsByClass[0] : " + targetsByClass[0]);
                 //console.log("targetsByClass[1] : " + targetsByClass[1]);
 
@@ -249,7 +278,7 @@ riskUI.ui=function(div){
 
                 //alternative approach, not separating by classes
                 const[allXTrains, allYTrains, allXTests, allYTests] = 
-                    convertToTensors(allData, allTargets, testSplit)
+                    convertToTensors(allData, allTargets, numTest, numTrain)
                 allInputTrains.push(allXTrains)
                 allOutputTrains.push(allYTrains)
                 allInputTests.push(allXTests)
@@ -290,11 +319,11 @@ riskUI.ui=function(div){
             }
 
             //may need to round depending on what testSplit ratio was given
-            const numTestExamples = Math.round(numExamples * testSplit);
+            //const numTestExamples = Math.round(numExamples * testSplit);
             //console.log('numTestExamples: ' + numTestExamples)
             //everything that isn't reserved as a testing example is used for training
-            const numTrainExamples = numExamples - numTestExamples;
-
+            //const numTrainExamples = numExamples - numTestExamples;
+            
             const xDims = data[0].length;   //length of each object holding inputs
             //console.log("xDims: " + xDims)
             //create 2D tensor to hold feature data
@@ -312,14 +341,14 @@ riskUI.ui=function(div){
             //array.slice(a,b) returns from a_th (inclusive) to b_th (exclusive)
             //elements of the array
 
-            console.log("training examples: " + numTrainExamples)
-            const xTrain = xs.slice([0,0], [numTrainExamples, xDims]);
+            console.log("training examples: " + numTrain)
+            const xTrain = xs.slice([0,0], [numTrain, xDims]);
 
-            const xTest = xs.slice([numTrainExamples,0], [numTestExamples, xDims]);
+            const xTest = xs.slice([numTrain,0], [numTest, xDims]);
             //const yTrain = ys.slice([0,0], [numTrainExamples, num_outcomes]);
             //const yTest = ys.slice([0,0], [numTestExamples, num_outcomes]);
-            const yTrain = ys.slice([0,0], [numTrainExamples, 1]);
-            const yTest = ys.slice([numTrainExamples,0], [numTestExamples, 1]);
+            const yTrain = ys.slice([0,0], [numTrain, 1]);
+            const yTest = ys.slice([numTrain,0], [numTest, 1]);
             result = [xTrain, yTrain, xTest, yTest];
             return result
         }   //end of convertToTensors function
