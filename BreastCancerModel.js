@@ -215,7 +215,7 @@ riskUI.ui=function(div){
                     //const data = delete example.observed_outcome; 
 
                     //array of data inputs
-                    const data = 
+                    const data =          
                         [parseInt(example.famhist), 
                         parseInt(example. menarche_dec),
                         parseInt(example.parity),
@@ -389,8 +389,8 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 40;      //edit
-            //const numberPerBatch = 3; //edit
+            const numberOfEpochs = 80;      //edit
+            const numberPerBatch = 30; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
 
@@ -420,7 +420,7 @@ riskUI.ui=function(div){
             const surface = { name: 'show.fitCallbacks', tab: 'Training' };
             //training the model
             const history = await model.fit(xTrain, yTrain,
-                {epochs: numberOfEpochs, /*batchSize: numberPerBatch, */validationData: [xTest, yTest],
+                {epochs: numberOfEpochs, batchSize: numberPerBatch, validationData: [xTest, yTest],
                     /*callbacks: {
                         
                         onEpochEnd: async (epoch, logs) => {
@@ -469,7 +469,9 @@ riskUI.ui=function(div){
                     //have to transfer to all numerical values
                 }
             })*/
-
+            const surface = { name: 'Confusion Matrix', tab: 'Charts' };
+            let testData = {values: [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57], labels:[0]}
+            tfvis.render.confusionMatrix(surface, testData);
 
             let testCase = [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57] 
             var input = tf.tensor2d(testCase, [1,14]);
