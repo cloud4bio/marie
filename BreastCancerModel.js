@@ -167,7 +167,7 @@ riskUI.ui=function(div){
             //return processedData
         }
         //testSplit represents the fraction of data used for testing (e.g. 0.2)
-        async function getCancerData(testSplit){
+        async function getCancerData(){
             original_cancer_data = await csv2json()
             processedData = await processData(original_cancer_data)
             //shuffle data
@@ -389,7 +389,7 @@ riskUI.ui=function(div){
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
             const learningRate = 0.01;      //edit
-            const numberOfEpochs = 80;      //edit
+            const numberOfEpochs = 1;      //edit
             const numberPerBatch = 30; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
@@ -444,7 +444,7 @@ riskUI.ui=function(div){
 
         async function run(){
             //alert("here")   //gets here
-            const accessData = await getCancerData(0.2)
+            const accessData = await getCancerData()
             //console.log("training arr: " + accessData)
             const [xTrain, yTrain, xTest, yTest] = accessData; 
             //reserve 20% of data for testing
@@ -473,7 +473,9 @@ riskUI.ui=function(div){
             })*/
             const surface = { name: 'Confusion Matrix', tab: 'Charts' };
             const classNames = ['No Cancer', 'Developed Cancer']
-            const [preds, labels] = model.predict();
+            const testxs = xTest.reshape([xTest.length, 1]);
+            const labels = yTest.argMax([-1]);
+            const preds = model.predict(testxs).argMax([-1]);
             const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
             
             tfvis.show.perClassAccuracy(surface, classAccuracy, classNames);
