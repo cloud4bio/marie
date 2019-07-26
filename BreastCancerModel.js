@@ -402,13 +402,16 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 16, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
+                {units: 16, activation: 'sigmoid', inputShape: [xTrain.shape[1]], bias: true}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
+            model.add(tf.layers.dense(
+                {units: 10, activation: 'sigmoid', bias: true}));
+
             //final layer with 3 neurons
             model.add(tf.layers.dense(
-                {units: 1, activation: 'sigmoid'}));
+                {units: 1, activation: 'sigmoid', bias: true}));
                 //sigmoid used for binary classification
 
         
@@ -438,7 +441,6 @@ riskUI.ui=function(div){
                 //tfvis.show.modelSummary(surface, model);
             return model;
         }   //end of trainModel function
-
 
         async function run(){
             //alert("here")   //gets here
@@ -470,6 +472,13 @@ riskUI.ui=function(div){
                 }
             })*/
             const surface = { name: 'Confusion Matrix', tab: 'Charts' };
+            const classNames = ['No Cancer', 'Developed Cancer']
+            const [preds, labels] = model.predict();
+            const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
+            
+            tfvis.show.perClassAccuracy(surface, classAccuracy, classNames);
+            labels.dispose();
+        
             let testData = {values: [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57], labels:[0]}
             tfvis.render.confusionMatrix(surface, testData);
 
