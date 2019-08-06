@@ -388,7 +388,7 @@ riskUI.ui=function(div){
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
-            const learningRate = 0.01;      //edit
+            const learningRate = 0.5;      //edit
             const numberOfEpochs = 1;      //edit
             const numberPerBatch = 30; //edit
             //Adam optimizer used for classification problems
@@ -402,12 +402,12 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 16, activation: 'sigmoid', inputShape: [xTrain.shape[1]], bias: true}));
+                {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]], bias: true}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
-            model.add(tf.layers.dense(
-                {units: 10, activation: 'sigmoid', bias: true}));
+            //model.add(tf.layers.dense(
+              //  {units: 10, activation: 'sigmoid', bias: true}));
 
             //final layer with 3 neurons
             model.add(tf.layers.dense(
@@ -473,26 +473,44 @@ riskUI.ui=function(div){
             })*/
             const surface = { name: 'Confusion Matrix', tab: 'Charts' };
             const classNames = ['No Cancer', 'Developed Cancer']
-            const testxs = xTest.reshape([xTest.length, 1]);
+            /*const testxs = xTest.reshape([xTest.length, 1]);
             const labels = yTest.argMax([-1]);
             const preds = model.predict(testxs).argMax([-1]);
             const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
             
             tfvis.show.perClassAccuracy(surface, classAccuracy, classNames);
             labels.dispose();
-        
+        */
             let testData = {values: [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57], labels:[0]}
             tfvis.render.confusionMatrix(surface, testData);
 
-            let testCase = [0, 5 , 2, 1 , 4 , 2 , 7 , 1, 0, 0, 0, 7 , 1, 57] 
+           /* var testOne = xTrain.slice([1],[1])
+            var translated = await testOne.array()
+            console.log('translated' + translated)*/
+
+            var predictionArr = []
+            for(let i = 0; i < xTest.shape[0]; i ++){
+                    console.log(i)
+                let currOriginal = xTest.slice([i],[1])
+                let thisCase = await currOriginal.array()
+                let currInput = tf.tensor2d(thisCase, [1,14]);
+                let currPrediction = model.predict(currInput);
+                let currOutput = await currPrediction.array();
+                predictionArr.push(currOutput)
+            }
+            console.log(predictionArr)
+            
+            //MAKE PREDICTIONS
+            /*
+            let testCase = [1, 8 , 0, 1 , 4 , 3 , 7 , 1, 0, 0, 0, 1 , 0, 52] 
             var input = tf.tensor2d(testCase, [1,14]);
             //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
-            console.log("wrong format?")
             const prediction = model.predict(input);
+            const ar1 = await prediction.array();
             //console.log(typeof prediction)
-            console.log(prediction)
-            const yourRisk = prediction  
+            console.log(ar1)
+            const yourRisk = prediction  */
             //console.log(yourRisk[0])    //or at 1?
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
             
