@@ -161,7 +161,7 @@ riskUI.ui=function(div){
             console.log(balancedTraining.length)
             console.log(balancedTesting.length)
             let balancedCohort = [balancedTraining, balancedTesting]
-            //console.log(balancedCohort)
+            console.log(balancedCohort)
             return balancedCohort
 
             //return processedData
@@ -402,12 +402,12 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]], bias: true}));
+                {units: 10, /*activation: 'sigmoid',*/ inputShape: [xTrain.shape[1]], bias: true}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
-            //model.add(tf.layers.dense(
-              //  {units: 10, activation: 'sigmoid', bias: true}));
+            model.add(tf.layers.dense(
+                {units: 12, activation: 'sigmoid', bias: true}));
 
             //final layer with 3 neurons
             model.add(tf.layers.dense(
@@ -489,20 +489,38 @@ riskUI.ui=function(div){
             console.log('translated' + translated)*/
 
             var predictionArr = []
-            for(let i = 0; i < xTest.shape[0]; i ++){
+            /*for(let i = 0; i < xTest.shape[0]; i ++){
                     console.log(i)
                 let currOriginal = xTest.slice([i],[1])
                 let thisCase = await currOriginal.array()
+                console.log(thisCase)
                 let currInput = tf.tensor2d(thisCase, [1,14]);
                 let currPrediction = model.predict(currInput);
                 let currOutput = await currPrediction.array();
-                predictionArr.push(currOutput)
-            }
+                console.log(currOutput)
+                predictionArr.push(currOutput[0])
+            }*/
+           // console.log(predictionArr)
+
+            let currInput = xTest.slice([1],[1])
+            console.log(await currInput.array())
+                let currPrediction = await model.predict(currInput);
+                let currOutput = await currPrediction.array();
+                console.log(currOutput)
+                predictionArr.push(currOutput[0])
+
+             let SeccurrInput = xTest.slice([2],[1])
+             console.log(await SeccurrInput.array())
+                let SeccurrPrediction = model.predict(SeccurrInput);
+                let SeccurrOutput = await SeccurrPrediction.array();
+                console.log(SeccurrOutput)
+                predictionArr.push(SeccurrOutput[0])
+
             console.log(predictionArr)
             
             //MAKE PREDICTIONS
             /*
-            let testCase = [1, 8 , 0, 1 , 4 , 3 , 7 , 1, 0, 0, 0, 1 , 0, 52] 
+            let testCase = [0, 8 , 0, 1 , 10 , 3 , 7 , 1, 0, 0, 0, 1 , 0, 52] 
             var input = tf.tensor2d(testCase, [1,14]);
             //const input = tf.tensor1d(testCase);
             console.log("input: " + input)     
@@ -513,16 +531,6 @@ riskUI.ui=function(div){
             const yourRisk = prediction  */
             //console.log(yourRisk[0])    //or at 1?
             //alert("Probabilty of cancer development" + yourRisk);  //show distribution of probabilities
-            
-            const averageRisk = 912/50000;  //is this an accurate baseline metric?
-
-           /* if(yourRisk > averageRisk){
-                alert("Your risk is " + yourRisk - averageRisk + " above average.")
-            } else {
-                alert("Your risk is " + averageRisk - yourRisk + " below average.")
-            }*/
-
-            //how to test accuracy of model if outputting a probability?
             
             //alert("Prediction error rate: " + (wrong / yTrue.length));
             //good if error rate is low
