@@ -402,16 +402,16 @@ riskUI.ui=function(div){
             
             //hidden layer with 10 neurons
             model.add(tf.layers.dense(
-                {units: 10, /*activation: 'sigmoid',*/ inputShape: [xTrain.shape[1]], bias: true}));
+                {units: 10, /*activation: 'sigmoid',*/ inputShape: [xTrain.shape[1]], useBias: true}));
                 //sigmoid produces output between 0 and 1
             //add more layers in between?
 
             model.add(tf.layers.dense(
-                {units: 12, activation: 'sigmoid', bias: true}));
+                {units: 12, activation: 'sigmoid', useBias: true}));
 
             //final layer with 3 neurons
             model.add(tf.layers.dense(
-                {units: 1, activation: 'sigmoid', bias: true}));
+                {units: 1, activation: 'sigmoid', useBias: true}));
                 //sigmoid used for binary classification
 
         

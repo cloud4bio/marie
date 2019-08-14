@@ -67,14 +67,14 @@ function createModel() {
   // Create a sequential model
   const model = tf.sequential(); 
   
-  // Add a single hidden layer
+  // Add a hidden layer
   model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
   
   //two layers with 25 each works well
   
-  model.add(tf.layers.dense({units: 25, activation: 'sigmoid'}));
+  model.add(tf.layers.dense({units: 25, activation: 'sigmoid', useBias: true}));
 
-  model.add(tf.layers.dense({units: 25, activation: 'sigmoid'}));
+  model.add(tf.layers.dense({units: 25, activation: 'sigmoid', useBias: true}));
 
   // Add an output layer
   model.add(tf.layers.dense({units: 1, useBias: true}));
@@ -110,6 +110,8 @@ function convertToTensor(data) {
     const labelMin = labelTensor.min();
 
     const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    //sub subtracts the second tensor from the first
+    //div divides every value by the given value (a scalar in this case)
     const normalizedLabels = labelTensor.sub(labelMin).div(labelMax.sub(labelMin));
 
     return {

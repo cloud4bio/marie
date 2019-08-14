@@ -164,7 +164,7 @@ tensorUI.ui=function(div){
                 {units: 10, activation: 'sigmoid', inputShape: [xTrain.shape[1]]}));
                 //sigmoid produces output between 0 and 1
             
-            //second layer with 3 neurons
+            //output layer with 3 neurons
             model.add(tf.layers.dense(
                 {units: 3, activation: 'softmax'}));    //3 units because classifying 3 types of flower
                 //softmax normalizes values so outputs all add up to 1
