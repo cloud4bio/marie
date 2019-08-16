@@ -8,9 +8,9 @@ tensorUI.ui=function(div){
     if(tensorUI.div){
         
         //Header and text
-        let h = `<h3>TensorFlow.js Iris Classification</h3>`
+        /*let h = `<h3>TensorFlow.js Iris Classification</h3>`
         let description = '<p>Please wait for the model to load.</p>'
-        tensorUI.div.innerHTML=h+description
+        tensorUI.div.innerHTML=h+description*/
 
         //FOLLOWING CODE FROM TUTORIAL:
         //https://www.youtube.com/watch?v=sLtXkU4QjxI&list=PLQY2H8rRoyvwLbzbnKJ59NkZvQAW9wLbx&index=20&t=0s
@@ -231,7 +231,7 @@ tensorUI.ui=function(div){
             //good if error rate is low
         }
 
-        doIris()
+        tensorUI.doIris = doIris
 
         //tfvis.visor().surface({name: 'Test', tab: 'Input Data'});
 /*
@@ -254,6 +254,6 @@ tensorUI.ui=function(div){
 window.onload=function(){
     if(document.getElementById('workSpace')){
         tensorUI.ui(document.getElementById('workSpace'))
-        //carsUI.ui(document.getElementById('workSpace'))
+        carsUI.ui(document.getElementById('workSpace'))
     }
 }

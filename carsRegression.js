@@ -7,15 +7,19 @@ carsUI.ui=function(div){
 
     if(carsUI.div){
 var x = document.createElement("H2");
-var title = document.createTextNode("Making Predictions with 2D Data");
+var title = document.createTextNode("TensorFlow.js Examples");
 
 //this model will take one number (horsepower) and predict one number (MPG)
 x.appendChild(title);
 var y = document.createElement("H3");
-var subtitle = document.createTextNode("TensorFlow.js Cars Tutorial")
+var subtitle = document.createTextNode("Cars Model for Predictions with 2D Data")
+var z = document.createElement("H3");
+var nextsub = document.createTextNode("Iris Model for Classification")
 y.appendChild(subtitle)
+z.appendChild(nextsub)
 document.body.appendChild(x);
 document.body.appendChild(y);
+document.body.appendChild(z);
 
 
 /**
@@ -204,13 +208,32 @@ function testModel(model, inputData, normalizationData) {
   );
 }
 
-
-run()
+  var newDiv = document.createElement('div');
+        document.body.appendChild(newDiv);
+        var carsButton = document.createElement('button')
+        carsButton.setAttribute("id","cars")
+        carsButton.innerHTML = "Cars Model"
+        document.body.appendChild(carsButton)
+        document.getElementById("cars").onclick = function() {
+                run()
+        }
+  
+  var nextDiv = document.createElement('div');
+        document.body.appendChild(nextDiv);
+        var irisButton = document.createElement('button')
+        irisButton.setAttribute("id","iris")
+        irisButton.innerHTML = "Iris Model"
+        document.body.appendChild(irisButton)
+        document.getElementById("iris").onclick = function() {
+                tensorUI.doIris()
+        }
+  
     }
 }
 //On page startup
 window.onload = function() {
     if (document.getElementById('workSpace')) {
         carsUI.ui(document.getElementById('workSpace'))
+        tensorUI.ui(document.getElementById('workSpace'))
     }
 }
