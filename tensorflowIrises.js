@@ -253,6 +253,7 @@ tensorUI.ui=function(div){
 //On page startup
 window.onload=function(){
     if(document.getElementById('workSpace')){
-        tensorUI.ui(document.getElementById('workSpace'))    
+        tensorUI.ui(document.getElementById('workSpace'))
+        //carsUI.ui(document.getElementById('workSpace'))
     }
 }

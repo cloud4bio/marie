@@ -1,5 +1,11 @@
 console.log('Hello TensorFlow');
 
+carsUI={}
+
+carsUI.ui=function(div){ 
+    carsUI.div=div||document.getElementById('workSpace')
+
+    if(carsUI.div){
 var x = document.createElement("H2");
 var title = document.createTextNode("Making Predictions with 2D Data");
 
@@ -72,9 +78,9 @@ function createModel() {
   
   //two layers with 25 each works well
   
-  model.add(tf.layers.dense({units: 25, activation: 'sigmoid', useBias: true}));
+  model.add(tf.layers.dense({units: 10, activation: 'sigmoid', useBias: true}));
 
-  model.add(tf.layers.dense({units: 25, activation: 'sigmoid', useBias: true}));
+  //model.add(tf.layers.dense({units: 25, activation: 'sigmoid', useBias: true}));
 
   // Add an output layer
   model.add(tf.layers.dense({units: 1, useBias: true}));
@@ -129,7 +135,7 @@ function convertToTensor(data) {
 async function trainModel(model, inputs, labels) {
 
   //0.01 looks best
-  const learningRate = 0.01  //try adjusting this parameter
+  const learningRate = 0.2  //try adjusting this parameter
 
   // Prepare the model for training.  
   model.compile({
@@ -198,4 +204,13 @@ function testModel(model, inputData, normalizationData) {
   );
 }
 
-document.addEventListener('DOMContentLoaded', run);
+
+run()
+    }
+}
+//On page startup
+window.onload = function() {
+    if (document.getElementById('workSpace')) {
+        carsUI.ui(document.getElementById('workSpace'))
+    }
+}
