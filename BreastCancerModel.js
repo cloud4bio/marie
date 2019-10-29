@@ -388,8 +388,8 @@ riskUI.ui=function(div){
     //train model, minimize loss function
     async function trainModel(xTrain, yTrain, xTest, yTest){
             const model = tf.sequential();
-            const learningRate = 0.5;      //edit
-            const numberOfEpochs = 1;      //edit
+            const learningRate = 0.1;      //edit
+            const numberOfEpochs = 50;      //edit
             const numberPerBatch = 30; //edit
             //Adam optimizer used for classification problems
             const optimizer = tf.train.adam(learningRate);
